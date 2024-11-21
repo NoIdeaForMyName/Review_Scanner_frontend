@@ -18,7 +18,7 @@ struct HomePage: View {
                 
                 MenuButton(iconName: "clock", description: "History", nextView: TestView())
                 
-                MenuButton(iconName: "person.circle", description: "Log In", nextView: TestView())
+                MenuButton(iconName: "person.circle", description: "Log In", nextView: LoginPage())
             }
             .padding()
             .frame(maxWidth: .infinity, maxHeight: .infinity)
