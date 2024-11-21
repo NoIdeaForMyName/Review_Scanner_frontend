@@ -14,7 +14,7 @@ struct HomePage: View {
                 
                 Spacer()
                 
-                MenuButton(iconName: "barcode.viewfinder", description: "Scan", nextView: TestView())
+                MenuButton(iconName: "barcode.viewfinder", description: "Scan", nextView: BarcodeScanner())
                 
                 MenuButton(iconName: "clock", description: "History", nextView: TestView())
                 
