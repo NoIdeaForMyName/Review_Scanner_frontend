@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct ReviewScannerApp: App {
+    @StateObject private var environmentData = EnvironmentData()
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            HomePage()
+                .environmentObject(environmentData)
         }
     }
 }

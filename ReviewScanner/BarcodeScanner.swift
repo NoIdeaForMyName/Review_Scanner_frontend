@@ -1,48 +1,48 @@
 import SwiftUI
-import AVFoundation
+import CodeScanner
 
 struct BarcodeScanner: View {
-    @State private var scannedCode: String? = nil
-    @State private var isScanning: Bool = true
+    @State var barcode: String = ""
+    @State var barcodeFound: Bool = false
+
+    var scannerSheet: some View {
+        CodeScannerView(
+            codeTypes: [.ean13],
+            completion: { result in
+                if case let .success(code) = result {
+                    self.barcode = code.string
+                    self.barcodeFound = true
+                }
+            }
+        )
+    }
     
     var body: some View {
-        VStack {
-            Text("Scanner")
-                .font(.title)
-                //.padding(.top)
-            
-            Spacer()
-            
-            if isScanning {
-                ScannerView(scannedCode: $scannedCode, isScanning: $isScanning)
-                    .frame(maxWidth: .infinity, maxHeight: 300)
-                    .cornerRadius(12)
-                    .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.gray, lineWidth: 2))
-            } else if let code = scannedCode {
-                Text("Scanned Code: \(code)")
-                    .font(.headline)
-                    .padding()
+        NavigationStack {
+            VStack(spacing: 20) {
+                Text("Scanner")
+                    .font(.title)
+                    //.padding(.top)
+                
+                Spacer()
+                
+                self.scannerSheet
+                    .background(Color.button, in: RoundedRectangle(cornerRadius: 50))
+                
+                Spacer()
+                
+                BarcodeManualEnter(infoText: "Doesn't work? Enter barcode manually:")
+                
             }
-            
-            Spacer()
-            
-            Button(action: {
-                isScanning = true
-                scannedCode = nil
-            }) {
-                Text("Restart Scanner")
-                    .font(.headline)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color.button)
-                    .foregroundColor(.black)
-                    .cornerRadius(8)
-            }
-            .padding(.horizontal)
+                .padding()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Gradient(colors: gradientColors))
+                
+                .navigationDestination(isPresented: $barcodeFound) {
+                    TestFoundBarcode(barcode: barcode)
+                }
         }
-        .padding()
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Gradient(colors: gradientColors))
+
     }
 }
 

@@ -12,7 +12,14 @@ let gradientColors: [Color] = [
     .gradientBottom
 ]
 
+extension UIScreen {
+    static let screenWidth = UIScreen.main.bounds.size.width
+    static let screenHeight = UIScreen.main.bounds.size.height
+    static let screenSize = UIScreen.main.bounds.size
+}
+
 struct ContentView: View {
+    
     var body: some View {
         VStack {
             Image(systemName: "globe")

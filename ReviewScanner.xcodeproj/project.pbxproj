@@ -3,8 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 77;
 	objects = {
+
+/* Begin PBXBuildFile section */
+		6AACB6A32CF8696D00A8C117 /* CodeScanner in Frameworks */ = {isa = PBXBuildFile; productRef = 6AACB6A22CF8696D00A8C117 /* CodeScanner */; };
+/* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		6A1F928B2CEF40E900FE47B6 /* PBXContainerItemProxy */ = {
@@ -30,9 +34,21 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		6A1F927C2CEF40E700FE47B6 /* ReviewScanner */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ReviewScanner; sourceTree = "<group>"; };
-		6A1F928D2CEF40E900FE47B6 /* ReviewScannerTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ReviewScannerTests; sourceTree = "<group>"; };
-		6A1F92972CEF40E900FE47B6 /* ReviewScannerUITests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ReviewScannerUITests; sourceTree = "<group>"; };
+		6A1F927C2CEF40E700FE47B6 /* ReviewScanner */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ReviewScanner;
+			sourceTree = "<group>";
+		};
+		6A1F928D2CEF40E900FE47B6 /* ReviewScannerTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ReviewScannerTests;
+			sourceTree = "<group>";
+		};
+		6A1F92972CEF40E900FE47B6 /* ReviewScannerUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ReviewScannerUITests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -40,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6AACB6A32CF8696D00A8C117 /* CodeScanner in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -100,6 +117,7 @@
 			);
 			name = ReviewScanner;
 			packageProductDependencies = (
+				6AACB6A22CF8696D00A8C117 /* CodeScanner */,
 			);
 			productName = ReviewScanner;
 			productReference = 6A1F927A2CEF40E700FE47B6 /* ReviewScanner.app */;
@@ -175,7 +193,6 @@
 				};
 			};
 			buildConfigurationList = 6A1F92752CEF40E700FE47B6 /* Build configuration list for PBXProject "ReviewScanner" */;
-			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -184,6 +201,10 @@
 			);
 			mainGroup = 6A1F92712CEF40E700FE47B6;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				6AACB6A12CF8676300A8C117 /* XCRemoteSwiftPackageReference "CodeScanner" */,
+			);
+			preferredProjectObjectVersion = 77;
 			productRefGroup = 6A1F927B2CEF40E700FE47B6 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -384,14 +405,17 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ReviewScanner/Preview Content\"";
+				DEVELOPMENT_TEAM = R2J537AW64;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need the camera to scane the barcodes";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -413,14 +437,17 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ReviewScanner/Preview Content\"";
+				DEVELOPMENT_TEAM = R2J537AW64;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need the camera to scane the barcodes";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -542,6 +569,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		6AACB6A12CF8676300A8C117 /* XCRemoteSwiftPackageReference "CodeScanner" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/twostraws/CodeScanner";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		6AACB6A22CF8696D00A8C117 /* CodeScanner */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6AACB6A12CF8676300A8C117 /* XCRemoteSwiftPackageReference "CodeScanner" */;
+			productName = CodeScanner;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 6A1F92722CEF40E700FE47B6 /* Project object */;
 }
