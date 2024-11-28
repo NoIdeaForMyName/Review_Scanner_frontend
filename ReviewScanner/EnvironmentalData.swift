@@ -6,18 +6,13 @@
 //
 
 import Foundation
+import Combine
 
-class EnvironmentData: ObservableObject {
+class EnvironmentData: ObservableObject {    
     @Published var userName: String = ""
     @Published var isLoggedIn: Bool = false
     
-    func logIn(name: String) {
-        userName = name
-        isLoggedIn = true
-    }
-    
-    func logOut() {
-        userName = ""
-        isLoggedIn = false
-    }
+    let apiService: APIService = .init()
 }
+
+
