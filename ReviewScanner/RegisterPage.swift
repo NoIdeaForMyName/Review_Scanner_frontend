@@ -1,15 +1,28 @@
 import SwiftUI
 
-struct LoginPage: View {
+struct RegisterPage: View {
+    @State private var nickname: String = ""
     @State private var email: String = ""
     @State private var password: String = ""
+    @State private var repeatedPassword: String = ""
     
     var body: some View {
         VStack(spacing: 80) {
-            Text("Login to existing account")
+            Text("Create new account")
             
             VStack(spacing: 25) {
                 VStack(spacing: 20) {
+                    HStack {
+                        Text("Nickname")
+                            .frame(width: 85, alignment: .leading)
+                        TextField("Enter your nickname", text: $nickname)
+                            .padding()
+                            .background(Color(.secondarySystemBackground))
+                            .cornerRadius(8)
+                            .textInputAutocapitalization(.none)
+                            .autocorrectionDisabled(true)
+                    }
+                    
                     HStack {
                         Text("E-mail")
                             .frame(width: 85, alignment: .leading)
@@ -30,23 +43,25 @@ struct LoginPage: View {
                             .background(Color(.secondarySystemBackground))
                             .cornerRadius(8)
                     }
+                    
+                    HStack {
+                        Text("Repeat")
+                            .frame(width: 85, alignment: .leading)
+                        SecureField("Repeat your password", text: $repeatedPassword)
+                            .padding()
+                            .background(Color(.secondarySystemBackground))
+                            .cornerRadius(8)
+                    }
                 }
                 .padding()
                 .background(Color(.systemBackground))
                 .cornerRadius(20)
                 .shadow(radius: 5)
                 
-                NavigationLink(destination: RegisterPage()) {
-                    Text("Do not have an account? Create new.")
-                    .font(.footnote)
-                    .foregroundColor(.black)
-                    .underline()
-                }
-                
                 Button(action: {
-                    // TODO: add login action
+                    // TODO: add register action
                 }) {
-                    Text("Login")
+                    Text("Register")
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                         .padding()
@@ -67,5 +82,5 @@ struct LoginPage: View {
 
 
 #Preview {
-    LoginPage()
+    RegisterPage()
 }
