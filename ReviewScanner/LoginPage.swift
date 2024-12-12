@@ -1,13 +1,18 @@
 import SwiftUI
+import Combine
 
 struct LoginPage: View {
     @State private var email: String = ""
     @State private var password: String = ""
-    
+    @State private var loginCancellable: AnyCancellable? // Do przechowywania subskrypcji
+    @State private var errorMessage: String? // Do przechowywania błędów logowania
+
+    @EnvironmentObject var environmentData: EnvironmentData
+
     var body: some View {
         VStack(spacing: 80) {
             Text("Login to existing account")
-            
+
             VStack(spacing: 25) {
                 VStack(spacing: 20) {
                     HStack {
@@ -21,7 +26,7 @@ struct LoginPage: View {
                             .autocorrectionDisabled(true)
                             .keyboardType(.emailAddress)
                     }
-                    
+
                     HStack {
                         Text("Password")
                             .frame(width: 85, alignment: .leading)
@@ -35,16 +40,22 @@ struct LoginPage: View {
                 .background(Color(.systemBackground))
                 .cornerRadius(20)
                 .shadow(radius: 5)
-                
+
+                if let errorMessage = errorMessage {
+                    Text(errorMessage)
+                        .foregroundColor(.red)
+                        .font(.footnote)
+                }
+
                 NavigationLink(destination: RegisterPage()) {
                     Text("Do not have an account? Create new.")
-                    .font(.footnote)
-                    .foregroundColor(.black)
-                    .underline()
+                        .font(.footnote)
+                        .foregroundColor(.black)
+                        .underline()
                 }
-                
+
                 Button(action: {
-                    // TODO: add login action
+                    loginAction()
                 }) {
                     Text("Login")
                         .font(.headline)
@@ -55,12 +66,28 @@ struct LoginPage: View {
                         .cornerRadius(8)
                 }
             }
-            
+
             Spacer()
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Gradient(colors: gradientColors))
+    }
+
+    private func loginAction() {
+        errorMessage = nil // Wyczyść poprzedni błąd
+
+        loginCancellable = environmentData.authService.login(email: email, password: password)
+            .receive(on: DispatchQueue.main) // Zapewnij, że aktualizacje UI będą na głównym wątku
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    print("Login completed successfully")
+                case .failure(let error):
+                    errorMessage = error.localizedDescription
+                }
+            }, receiveValue: {_ in
+            })
     }
 }
 

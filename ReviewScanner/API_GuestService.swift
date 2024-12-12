@@ -7,11 +7,11 @@
 import Foundation
 import Combine
 
-class APIService {
-    let baseURL: URL = .init(string: "http://localhost:5000")!
+class API_GuestService {
+    let baseURL: URL = .init(string: "http://localhost:8080")!
     
     func fetchProductBarcode(barcode: String) -> AnyPublisher<ProductData, APIError> {
-        let url = baseURL.appendingPathComponent("product_barcode/\(barcode)")
+        let url = baseURL.appendingPathComponent("products/get-by-barcode/\(barcode)")
         return URLSession.shared.dataTaskPublisher(for: url)
             .tryMap { output in
                 guard let response = output.response as? HTTPURLResponse, response.statusCode == 200 else {
@@ -27,7 +27,7 @@ class APIService {
     }
     
     func fetchProductId(id: Int) -> AnyPublisher<ProductData, APIError> {
-        let url = baseURL.appendingPathComponent("product/\(id)")
+        let url = baseURL.appendingPathComponent("products/\(id)")
         return URLSession.shared.dataTaskPublisher(for: url)
             .tryMap { output in
                 guard let response = output.response as? HTTPURLResponse, response.statusCode == 200 else {
@@ -42,25 +42,4 @@ class APIService {
             .eraseToAnyPublisher()
     }
 }
-
-enum APIError: LocalizedError {
-    case invalidResponse
-    case decodingError
-    case networkError(Error)
-    case customMessage(String)
-
-    var errorDescription: String? {
-        switch self {
-        case .invalidResponse:
-            return "The server responded with an invalid status."
-        case .decodingError:
-            return "Failed to decode the response data."
-        case .networkError(let error):
-            return "Network error: \(error.localizedDescription)"
-        case .customMessage(let message):
-            return message
-        }
-    }
-}
-
 

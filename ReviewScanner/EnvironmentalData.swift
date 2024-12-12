@@ -12,7 +12,9 @@ class EnvironmentData: ObservableObject {
     @Published var userName: String = ""
     @Published var isLoggedIn: Bool = false
     
-    let apiService: APIService = .init()
+    let guestService: API_GuestService = .init()
+    let authService: AuthService = .init()
+    
 }
 
 
