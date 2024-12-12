@@ -2,12 +2,8 @@ import SwiftUI
 import Combine
 
 struct LoginView: View {
-    @State private var email: String = ""
-    @State private var password: String = ""
-    @State private var isLoggedIn: Bool = false
-    @State private var loginCancellable: AnyCancellable? // Do przechowywania subskrypcji
-    @State private var errorMessage: String? // Do przechowywania błędów logowania
-
+    @StateObject var loginViewModel: LoginViewModel = LoginViewModel()
+    
     var body: some View {
         NavigationStack {
             VStack(spacing: 80) {
@@ -18,7 +14,7 @@ struct LoginView: View {
                         HStack {
                             Text("E-mail")
                                 .frame(width: 85, alignment: .leading)
-                            TextField("Enter your e-mail address", text: $email)
+                            TextField("Enter your e-mail address", text: $loginViewModel.email)
                                 .padding()
                                 .background(Color(.secondarySystemBackground))
                                 .cornerRadius(8)
@@ -30,7 +26,7 @@ struct LoginView: View {
                         HStack {
                             Text("Password")
                                 .frame(width: 85, alignment: .leading)
-                            SecureField("Enter your password", text: $password)
+                            SecureField("Enter your password", text: $loginViewModel.password)
                                 .padding()
                                 .background(Color(.secondarySystemBackground))
                                 .cornerRadius(8)
@@ -41,7 +37,7 @@ struct LoginView: View {
                     .cornerRadius(20)
                     .shadow(radius: 5)
                     
-                    if let errorMessage = errorMessage {
+                    if let errorMessage = loginViewModel.errorMessage {
                         Text(errorMessage)
                             .foregroundColor(.red)
                             .font(.footnote)
@@ -55,7 +51,7 @@ struct LoginView: View {
                     }
                     
                     Button(action: {
-                        loginAction()
+                        loginViewModel.loginAction()
                     }) {
                         Text("Login")
                             .font(.headline)
@@ -73,30 +69,12 @@ struct LoginView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Gradient(colors: gradientColors))
             
-            .navigationDestination(isPresented: $isLoggedIn) {
+            .navigationDestination(isPresented: $loginViewModel.isLoggedIn) {
                 HomePage()
             }
         }
     }
 
-    private func loginAction() {
-        errorMessage = nil // Wyczyść poprzedni błąd
-
-        loginCancellable = environmentData.authService.login(email: email, password: password)
-            .receive(on: DispatchQueue.main) // Zapewnij, że aktualizacje UI będą na głównym wątku
-            .sink(receiveCompletion: { completion in
-                switch completion {
-                case .finished:
-                    print("Login completed successfully")
-                case .failure(let error):
-                    errorMessage = error.localizedDescription
-                }
-            }, receiveValue: { userData in // TODO
-                environmentData.userData.email = userData.email
-                environmentData.userData.nickname = userData.nickname
-                isLoggedIn = true
-            })
-    }
 }
 
 
