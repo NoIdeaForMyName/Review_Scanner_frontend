@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-class EnvironmentData: ObservableObject {    
+class EnvironmentData {
     var userData: ThisUserData = .init()
     
     let guestService: API_GuestService = .init()
@@ -16,9 +16,9 @@ class EnvironmentData: ObservableObject {
     
 }
 
-class ThisUserData: ObservableObject {
-    @Published var email: String = ""
-    @Published var nickname: String = ""
+class ThisUserData {
+    var email: String = ""
+    var nickname: String = ""
     
     public func isLoggedIn() -> Bool {
         return email != ""

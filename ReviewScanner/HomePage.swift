@@ -10,7 +10,12 @@ struct HomePage: View {
                     .padding(.top, 50)
                     .padding(.bottom, 10)
                 
-                Text("Hello")
+                if environmentData.userData.isLoggedIn() {
+                    Text("Hello \(environmentData.userData.nickname)")
+                }
+                else {
+                    Text("Hello")
+                }
                 
                 Spacer()
                 
@@ -18,7 +23,7 @@ struct HomePage: View {
                 
                 MenuButton(iconName: "clock", description: "History", nextView: TestView())
                 
-                MenuButton(iconName: "person.circle", description: "Log In", nextView: LoginPage())
+                MenuButton(iconName: "person.circle", description: "Log In", nextView: LoginView())
             }
             .padding()
             .frame(maxWidth: .infinity, maxHeight: .infinity)

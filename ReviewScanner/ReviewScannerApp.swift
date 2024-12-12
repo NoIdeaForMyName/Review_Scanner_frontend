@@ -7,14 +7,14 @@
 
 import SwiftUI
 
+let environmentData = EnvironmentData()
+
 @main
 struct ReviewScannerApp: App {
-    @StateObject private var environmentData = EnvironmentData()
 
     var body: some Scene {
         WindowGroup {
             HomePage()
-                .environmentObject(environmentData)
         }
     }
 }
