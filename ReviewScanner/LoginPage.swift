@@ -86,7 +86,9 @@ struct LoginPage: View {
                 case .failure(let error):
                     errorMessage = error.localizedDescription
                 }
-            }, receiveValue: {_ in
+            }, receiveValue: { userData in // TODO
+                environmentData.userData.email = userData.email
+                environmentData.userData.nickname = userData.nickname
             })
     }
 }

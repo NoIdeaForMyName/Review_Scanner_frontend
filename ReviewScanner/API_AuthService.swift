@@ -11,7 +11,7 @@ import Combine
 class AuthService {
     let baseURL: URL = .init(string: "http://localhost:8080")!
     
-    func login(email: String, password: String) -> AnyPublisher<Void, APIError> {
+    func login(email: String, password: String) -> AnyPublisher<LoggingData, APIError> {
             let url = baseURL.appendingPathComponent("login")
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
@@ -46,8 +46,9 @@ class AuthService {
                         throw APIError.customMessage("Access token not found in cookies.")
                     }
                     
-                    return ()
+                    return output.data
                 }
+                .decode(type: LoggingData.self, decoder: JSONDecoder())
                 .mapError { error in
                     (error as? APIError) ?? .networkError(error)
                 }

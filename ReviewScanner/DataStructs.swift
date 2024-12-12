@@ -46,6 +46,11 @@ struct UserData: Decodable {
     let nickname: String
 }
 
+struct LoggingData: Decodable {
+    let email: String
+    let nickname: String
+}
+
 struct ShopData: Decodable {
     let id: Int
     let name: String
