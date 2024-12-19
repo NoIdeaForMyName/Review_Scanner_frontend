@@ -23,4 +23,9 @@ class ThisUserData {
     public func isLoggedIn() -> Bool {
         return email != ""
     }
+    
+    public func clearData() -> Void {
+        email = ""
+        nickname = ""
+    }
 }
