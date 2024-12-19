@@ -1,11 +1,11 @@
 import SwiftUI
 
-struct ProductPage: View {
+struct ProductPageView: View {
     let productName: String
     let productImageURL: String
     let reviewAverage: String
     let productDescription: String
-    let reviews: [ProductReviewView]
+    let reviews: [ProductReview]
     
     @State private var isDescriptionExpanded: Bool = false
     
@@ -88,13 +88,13 @@ struct ProductPage: View {
 }
 
 #Preview {
-    ProductPage(
+    ProductPageView(
         productName: "MacBook Pro",
         productImageURL: "https://images.unsplash.com/photo-1719937206168-f4c829152b91?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         reviewAverage: "4.8",
         productDescription: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
         reviews: [
-            ProductReviewView(
+            ProductReview(
                 reviewTitle: "Review 1",
                 reviewBody: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
                 nickname: "user1",
@@ -106,7 +106,7 @@ struct ProductPage: View {
                     "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 ]
             ),
-            ProductReviewView(
+            ProductReview(
                 reviewTitle: "Review 2",
                 reviewBody: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
                 nickname: "user2",

@@ -1,7 +1,7 @@
 import SwiftUI
 import CodeScanner
 
-struct BarcodeScanner: View {
+struct BarcodeScannerView: View {
     @State var barcode: String = ""
     @State var barcodeFound: Bool = false
 
@@ -39,7 +39,7 @@ struct BarcodeScanner: View {
                 .background(Gradient(colors: gradientColors))
                 
                 .navigationDestination(isPresented: $barcodeFound) {
-                    TestFoundBarcode(barcode: barcode)
+                    TestFoundBarcodeView(barcode: barcode)
                 }
         }
 
@@ -47,5 +47,5 @@ struct BarcodeScanner: View {
 }
 
 #Preview {
-    BarcodeScanner()
+    BarcodeScannerView()
 }

@@ -43,7 +43,7 @@ struct LoginView: View {
                             .font(.footnote)
                     }
                     
-                    NavigationLink(destination: RegisterPage()) {
+                    NavigationLink(destination: RegisterView()) {
                         Text("Do not have an account? Create new.")
                             .font(.footnote)
                             .foregroundColor(.black)
@@ -70,7 +70,7 @@ struct LoginView: View {
             .background(Gradient(colors: gradientColors))
             
             .navigationDestination(isPresented: $loginViewModel.isLoggedIn) {
-                HomePage()
+                HomeView()
             }
         }
     }

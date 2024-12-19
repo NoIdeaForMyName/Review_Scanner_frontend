@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct HomePage: View {
+struct HomeView: View {
     var body: some View {
         NavigationStack {
             VStack {
@@ -19,7 +19,7 @@ struct HomePage: View {
                 
                 Spacer()
                 
-                MenuButton(iconName: "barcode.viewfinder", description: "Scan", nextView: BarcodeScanner())
+                MenuButton(iconName: "barcode.viewfinder", description: "Scan", nextView: BarcodeScannerView())
                 
                 MenuButton(iconName: "clock", description: "History", nextView: TestView())
                 
@@ -35,5 +35,5 @@ struct HomePage: View {
 
 
 #Preview {
-    HomePage()
+    HomeView()
 }

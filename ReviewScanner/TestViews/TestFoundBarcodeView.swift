@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct TestFoundBarcode: View {
+struct TestFoundBarcodeView: View {
     let barcode: String
     
     var body: some View {
@@ -17,5 +17,5 @@ struct TestFoundBarcode: View {
 }
 
 #Preview {
-    TestFoundBarcode(barcode: "no barcode.")
+    TestFoundBarcodeView(barcode: "no barcode.")
 }

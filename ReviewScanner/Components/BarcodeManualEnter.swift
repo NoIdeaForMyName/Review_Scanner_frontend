@@ -51,7 +51,7 @@ struct BarcodeManualEnter: View {
 //            .background(Gradient(colors: gradientColors))
             
             .navigationDestination(isPresented: $barcodeEntered) {
-                TestFoundBarcode(barcode: barcodeToString(barcode))
+                TestFoundBarcodeView(barcode: barcodeToString(barcode))
             }
             
         }
