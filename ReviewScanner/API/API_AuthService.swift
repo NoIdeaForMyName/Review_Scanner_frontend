@@ -8,8 +8,14 @@
 import Foundation
 import Combine
 
-class AuthService {
-    let baseURL: URL = .init(string: "http://localhost:8080")!
+protocol AuthServiceProtocol {
+    func login(email: String, password: String) -> AnyPublisher<LoggingData, APIError>
+    func refreshToken() -> AnyPublisher<Void, APIError>
+    func logout() -> AnyPublisher<Void, APIError>
+}
+
+class AuthService: AuthServiceProtocol {
+    let baseURL: URL = .init(string: "http://localhost:5000")!
     
     func login(email: String, password: String) -> AnyPublisher<LoggingData, APIError> {
             let url = baseURL.appendingPathComponent("login")
@@ -21,8 +27,9 @@ class AuthService {
             
             return URLSession.shared.dataTaskPublisher(for: request)
                 .tryMap { output in
-                    guard let response = output.response as? HTTPURLResponse, response.statusCode == 200 else {
-                        throw APIError.invalidResponse
+                    let response = APIResponse.getResponse(output)
+                    if case .failure(let error) = response {
+                        throw error
                     }
                     
                     // Odczyt plików cookie z odpowiedzi
@@ -43,14 +50,14 @@ class AuthService {
                     
                     // Upewnij się, że tokeny zostały zapisane
                     guard UserDefaults.standard.string(forKey: "access_token_cookie") != nil else {
-                        throw APIError.customMessage("Access token not found in cookies.")
+                        throw APIError.unknown("Access token not found in cookies.")
                     }
                     
                     return output.data
                 }
                 .decode(type: LoggingData.self, decoder: JSONDecoder())
                 .mapError { error in
-                    (error as? APIError) ?? .networkError(error)
+                    APIError.mapError(error)
                 }
                 .eraseToAnyPublisher()
         }
@@ -68,8 +75,9 @@ class AuthService {
             
             return URLSession.shared.dataTaskPublisher(for: request)
                 .tryMap { output in
-                    guard let response = output.response as? HTTPURLResponse, response.statusCode == 200 else {
-                        throw APIError.invalidResponse
+                    let response = APIResponse.getResponse(output)
+                    if case .failure(let error) = response {
+                        throw error
                     }
                     
                     // Zaktualizuj pliki cookie
@@ -91,7 +99,7 @@ class AuthService {
                     return ()
                 }
                 .mapError { error in
-                    (error as? APIError) ?? .networkError(error)
+                    APIError.mapError(error)
                 }
                 .eraseToAnyPublisher()
         }
@@ -106,17 +114,7 @@ class AuthService {
             request.setValue(csrfToken, forHTTPHeaderField: "X-CSRF-TOKEN")
         }
         
-        return URLSession.shared.dataTaskPublisher(for: request)
-            .tryMap { output in
-                guard let response = output.response as? HTTPURLResponse, response.statusCode == 200 else {
-                    throw APIError.invalidResponse
-                }
-                return ()
-            }
-            .mapError { error in
-                (error as? APIError) ?? .networkError(error)
-            }
-            .eraseToAnyPublisher()
+        return APIResponse.fetchStatusVoid(for: request)
     }
 }
 
