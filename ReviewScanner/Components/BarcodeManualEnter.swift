@@ -11,7 +11,8 @@ struct BarcodeManualEnter: View {
     let infoText: String
     
     @State private var barcode: [String] = Array(repeating: "", count: 13) // 13 pól na cyfry
-    @State private var barcodeEntered: Bool = false
+    @State var assigner: (String) -> Void
+    //@State var barcodeEntered = false
     
     // spacing after 1 and 7 idx
     var spacingIdx: [Int] = [1, 7]
@@ -50,9 +51,18 @@ struct BarcodeManualEnter: View {
 //            .frame(maxHeight: .infinity)
 //            .background(Gradient(colors: gradientColors))
             
-            .navigationDestination(isPresented: $barcodeEntered) {
-                TestFoundBarcodeView(barcode: barcodeToString(barcode))
-            }
+//            .navigationDestination(isPresented: $barcodeEntered) {
+//                ProductPageView(barcode: barcodeToString(barcode))
+//            }
+            
+//            .onChange(of: barcodeEntered) { found in
+//                if found {
+//                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+//                        barcode_str = ""
+//                        barcodeEntered = false
+//                    }
+//                }
+//            }
             
         }
         
@@ -73,7 +83,7 @@ struct BarcodeManualEnter: View {
             }
             
             if currIdx == barcode.count - 1 {
-                barcodeEntered = true
+                barcodeCompleted()
             }
         }
         else if !entered.isEmpty && currIdx + 1 <= barcode.count - 1 {
@@ -83,13 +93,12 @@ struct BarcodeManualEnter: View {
         }
     }
     
-    func barcodeToString(_ barcode: [String]) -> String {
-        let joined = barcode.joined(separator: "")
-        return joined
+    func barcodeCompleted() -> Void {
+        assigner(barcode.joined(separator: ""))
     }
     
 }
 
 #Preview {
-    BarcodeManualEnter(infoText: "Doesn't work? Enter barcode manually:")
+    //BarcodeManualEnter(infoText: "Doesn't work? Enter barcode manually:")
 }

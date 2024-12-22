@@ -11,7 +11,8 @@ class API_GuestService {
     let baseURL: URL = .init(string: "http://localhost:8080")!
     
     func fetchProductBarcode(barcode: String) -> AnyPublisher<ProductData, APIError> {
-        let url = baseURL.appendingPathComponent("products/get-by-barcode/\(barcode)")
+        let url = baseURL.appendingPathComponent("/products/get-by-barcode")
+            .appending(queryItems: [URLQueryItem(name: "barcode", value: barcode)])
         return URLSession.shared.dataTaskPublisher(for: url)
             .tryMap { output in
                 guard let response = output.response as? HTTPURLResponse, response.statusCode == 200 else {
