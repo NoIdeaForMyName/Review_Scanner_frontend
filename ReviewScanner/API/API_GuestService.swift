@@ -7,40 +7,23 @@
 import Foundation
 import Combine
 
-class API_GuestService {
-    let baseURL: URL = .init(string: "http://localhost:8080")!
+
+protocol GuestServiceProtocol {
+    func fetchProductBarcode(barcode:String) -> AnyPublisher<ProductData, APIError>
+    func fetchProductId(id:Int) -> AnyPublisher<ProductData, APIError>
+}
+
+class API_GuestService: GuestServiceProtocol{
+    let baseURL: URL = .init(string: "http://localhost:5000")!
     
     func fetchProductBarcode(barcode: String) -> AnyPublisher<ProductData, APIError> {
         let url = baseURL.appendingPathComponent("/products/get-by-barcode")
             .appending(queryItems: [URLQueryItem(name: "barcode", value: barcode)])
-        return URLSession.shared.dataTaskPublisher(for: url)
-            .tryMap { output in
-                guard let response = output.response as? HTTPURLResponse, response.statusCode == 200 else {
-                    throw APIError.invalidResponse
-                }
-                return output.data
-            }
-            .decode(type: ProductData.self, decoder: JSONDecoder())
-            .mapError { error in
-                (error as? APIError) ?? .networkError(error)
-            }
-            .eraseToAnyPublisher()
+        return APIResponse.fetchData(for: URLRequest(url: url))
     }
     
     func fetchProductId(id: Int) -> AnyPublisher<ProductData, APIError> {
         let url = baseURL.appendingPathComponent("products/\(id)")
-        return URLSession.shared.dataTaskPublisher(for: url)
-            .tryMap { output in
-                guard let response = output.response as? HTTPURLResponse, response.statusCode == 200 else {
-                    throw APIError.invalidResponse
-                }
-                return output.data
-            }
-            .decode(type: ProductData.self, decoder: JSONDecoder())
-            .mapError { error in
-                (error as? APIError) ?? .networkError(error)
-            }
-            .eraseToAnyPublisher()
+        return APIResponse.fetchData(for: URLRequest(url: url))
     }
 }
-

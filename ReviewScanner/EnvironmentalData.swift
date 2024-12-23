@@ -11,8 +11,8 @@ import Combine
 class EnvironmentData {
     var userData: ThisUserData = .init()
     
-    let guestService: API_GuestService = .init()
-    let authService: AuthService = .init()
+    let guestService: GuestServiceProtocol = API_GuestService()
+    let authService: AuthServiceProtocol = AuthService()
     
 }
 
