@@ -14,7 +14,7 @@ protocol GuestServiceProtocol {
 }
 
 class API_GuestService: GuestServiceProtocol{
-    let baseURL: URL = .init(string: "http://localhost:5000")!
+    let baseURL: URL = .init(string: "http://localhost:8080")!
     
     func fetchProductBarcode(barcode: String) -> AnyPublisher<ProductData, APIError> {
         let url = baseURL.appendingPathComponent("/products/get-by-barcode")

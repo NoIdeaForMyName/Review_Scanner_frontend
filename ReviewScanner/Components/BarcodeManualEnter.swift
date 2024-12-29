@@ -27,6 +27,7 @@ struct BarcodeManualEnter: View {
                 Text(infoText)
                     .font(.system(size: 22))
                     .padding(.bottom, 10)
+                    .multilineTextAlignment(.center)
                 
                 HStack(spacing: 5) {
                     ForEach(0..<13, id: \.self) { index in
@@ -100,5 +101,10 @@ struct BarcodeManualEnter: View {
 }
 
 #Preview {
-    //BarcodeManualEnter(infoText: "Doesn't work? Enter barcode manually:")
+    BarcodeManualEnter(
+        infoText: "Doesn't work? Enter barcode manually:",
+        assigner: { code in }
+    )
+        .frame(maxHeight: .infinity)
+        .background(Gradient(colors: gradientColors))
 }

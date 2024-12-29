@@ -15,7 +15,7 @@ protocol AuthServiceProtocol {
 }
 
 class AuthService: AuthServiceProtocol {
-    let baseURL: URL = .init(string: "http://localhost:5000")!
+    let baseURL: URL = .init(string: "http://localhost:8080")!
     
     func login(email: String, password: String) -> AnyPublisher<LoggingData, APIError> {
             let url = baseURL.appendingPathComponent("login")
