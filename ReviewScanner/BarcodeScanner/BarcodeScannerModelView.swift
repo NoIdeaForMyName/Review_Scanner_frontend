@@ -9,15 +9,16 @@ import Foundation
 import Combine
 
 class BarcodeScannerModelView: ObservableObject {
-    @Published public var errorMessage: String? // Do przechowywania błędów logowania
+    @Published public var errorData: APIError? // Do przechowywania błędów logowania
     @Published public var productData: ProductData?
     @Published public var success: Bool = false
+    @Published public var error: Bool = false
     @Published public var isLoading: Bool = false
 
     private var productDataCancellable: AnyCancellable? // Do przechowywania subskrypcji
 
     public func fetchProductData(barcode: String) -> Void {
-        errorMessage = nil // Wyczyść poprzedni błąd
+        errorData = nil // Wyczyść poprzedni błąd
         isLoading = true
 
         productDataCancellable = environmentData.guestService.fetchProductBarcode(barcode: barcode)
@@ -28,8 +29,8 @@ class BarcodeScannerModelView: ObservableObject {
                     print("Product data fetched successfully")
                     self?.success = true
                 case .failure(let error):
-                    self?.errorMessage = error.localizedDescription
-                    self?.success = false
+                    self?.error = true
+                    self?.errorData = error
                 }
                 self?.isLoading = false
             }, receiveValue: { [weak self] prodData in

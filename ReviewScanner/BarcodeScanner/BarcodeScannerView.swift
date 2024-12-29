@@ -65,6 +65,18 @@ struct BarcodeScannerView: View {
                     //TestFoundBarcodeView(barcode: barcode)
                 }
                 
+                .navigationDestination(isPresented: $barcodeScannerViewModel.error) {
+                    switch barcodeScannerViewModel.errorData {
+                    case .notFound:
+                        ProductNotFoundView()
+                    case .networkingError:
+                        Text("Networking error")
+                    default:
+                        Text("Other error")
+                    }
+                    
+                }
+                
                 if barcodeScannerViewModel.isLoading {
                     CircleLoaderView()
                 }
