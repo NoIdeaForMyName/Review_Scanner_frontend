@@ -13,11 +13,13 @@ class LoginViewModel: ObservableObject {
     @Published public var password: String = ""
     @Published public var isLoggedIn: Bool = false
     @Published public var errorMessage: String? // Do przechowywania błędów logowania
+    @Published public var isLoading: Bool = false
 
     private var loginCancellable: AnyCancellable? // Do przechowywania subskrypcji
 
     public func loginAction() {
         errorMessage = nil // Wyczyść poprzedni błąd
+        isLoading = true
 
         loginCancellable = environmentData.authService.login(email: email, password: password)
             .receive(on: DispatchQueue.main) // Zapewnij, że aktualizacje UI będą na głównym wątku
@@ -28,6 +30,7 @@ class LoginViewModel: ObservableObject {
                 case .failure(let error):
                     self?.errorMessage = error.localizedDescription
                 }
+                self?.isLoading = false
             }, receiveValue: { [weak self] userData in // TODO
                 environmentData.userData.email = userData.email
                 environmentData.userData.nickname = userData.nickname
