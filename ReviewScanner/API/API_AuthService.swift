@@ -35,16 +35,7 @@ class AuthService: AuthServiceProtocol {
                     // Odczyt plików cookie z odpowiedzi
                     if let cookies = HTTPCookieStorage.shared.cookies(for: url) {
                         for cookie in cookies {
-                            print("Cookie name: \(cookie.name), value: \(cookie.value)")
-                            if cookie.name == "access_token_cookie" {
-                                UserDefaults.standard.set(cookie.value, forKey: "access_token_cookie")
-                            } else if cookie.name == "refresh_token_cookie" {
-                                UserDefaults.standard.set(cookie.value, forKey: "refresh_token_cookie")
-                            } else if cookie.name == "csrf_access_token" {
-                                UserDefaults.standard.set(cookie.value, forKey: "csrf_access_token")
-                            } else if cookie.name == "csrf_refresh_token" {
-                                UserDefaults.standard.set(cookie.value, forKey: "csrf_refresh_token")
-                            }
+                            UserDefaults.standard.set(cookie.value, forKey: cookie.name)
                         }
                     }
                     
