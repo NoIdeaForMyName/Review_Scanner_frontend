@@ -12,7 +12,7 @@ class EnvironmentData {
     var userData: ThisUserData = .init()
     
     let guestService: GuestServiceProtocol = API_GuestService()
-    let authService: AuthServiceProtocol = AuthService()
+    let authService: AuthServiceProtocol = API_AuthService()
     
 }
 

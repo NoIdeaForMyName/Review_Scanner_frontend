@@ -5,17 +5,6 @@
 //  Created by m1 on 28/11/2024.
 //
 
-struct ProductShortData: Decodable {
-    let name: String
-    let id: Int
-    let price: Double
-    let image: String
-    let description: String
-    let average_grade: Double
-    let grade_count: Int
-}
-
-
 struct ProductData: Decodable {
     let id: Int
     let name: String
@@ -25,6 +14,16 @@ struct ProductData: Decodable {
     let average_grade: Double
     let grade_count: Int
     let reviews: [ReviewData]
+}
+
+struct ProductShortData: Decodable {
+    let id: Int
+    let name: String
+    let description: String
+    let image: String
+    let barcode: String
+    let average_grade: Double
+    let grade_count: Int
 }
 
 struct ReviewData: Decodable {
@@ -54,6 +53,11 @@ struct LoggingData: Decodable {
 struct ShopData: Decodable {
     let id: Int
     let name: String
+}
+
+struct ScanHistoryEntry: Decodable {
+    let id: Int
+    let timestamp: String
 }
 
 struct ReviewMediaData: Decodable {
