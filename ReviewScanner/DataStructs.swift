@@ -16,16 +16,6 @@ struct ProductData: Decodable {
     let reviews: [ReviewData]
 }
 
-struct ProductShortData: Decodable {
-    let id: Int
-    let name: String
-    let description: String
-    let image: String
-    let barcode: String
-    let average_grade: Double
-    let grade_count: Int
-}
-
 struct ReviewData: Decodable {
     let id: Int
     let title: String

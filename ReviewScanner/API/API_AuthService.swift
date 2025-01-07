@@ -16,15 +16,15 @@ protocol AuthServiceProtocol {
     func logout() -> AnyPublisher<Void, APIError>
     func addToHistory(barcode: String, timestamp: String) -> AnyPublisher<Void, APIError>
     func addToHistory(productId: Int, timestamp: String) -> AnyPublisher<Void, APIError>
+    func addToHistory(entries: [ScanHistoryEntry]) -> AnyPublisher<Void, APIError>
     func fetchScanHistory() -> AnyPublisher<[ScanHistoryEntry], APIError>
     func fetchMyReviews() -> AnyPublisher<[ReviewData], APIError>
     func addProduct(barcode: String, name: String, description: String, image: UIImage) -> AnyPublisher<Void, APIError>
     func addReview(product_id: Int, title: String, description: String, grade: Int, images: [UIImage]) -> AnyPublisher<Void, APIError>
-    
 }
 
 class API_AuthService: AuthServiceProtocol {
-    let baseURL: URL = .init(string: "http://localhost:8080")!
+    let baseURL: URL = .init(string: "http://127.0.0.1:8080")!
     
     func addToHistory(barcode: String, timestamp: String) -> AnyPublisher<Void, APIError> {
         let url = baseURL.appendingPathComponent("add-to-history")
@@ -39,6 +39,7 @@ class API_AuthService: AuthServiceProtocol {
             "timestamp": timestamp
         ]
         request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         return APIResponse.fetchStatusVoid(for: request)
     }
@@ -56,9 +57,28 @@ class API_AuthService: AuthServiceProtocol {
             "timestamp": timestamp
         ]
         request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         return APIResponse.fetchStatusVoid(for: request)
     }
+    
+    func addToHistory(entries: [ScanHistoryEntry]) -> AnyPublisher<Void, APIError> {
+        let url = baseURL.appendingPathComponent("add-to-history")
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        
+        if let csrfToken = UserDefaults.standard.string(forKey: "csrf_access_token") {
+            request.setValue(csrfToken, forHTTPHeaderField: "X-CSRF-TOKEN")
+        }
+        
+        let jsonData = try! JSONEncoder().encode(entries)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = jsonData
+        
+        return APIResponse.fetchStatusVoid(for: request)
+    }
+    
+    
     
     func fetchScanHistory() -> AnyPublisher<[ScanHistoryEntry], APIError> {
         let url = baseURL.appendingPathComponent("scan-history")
@@ -85,6 +105,7 @@ class API_AuthService: AuthServiceProtocol {
             "image_base64": imageToBase64(image)!
         ]
         request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         return APIResponse.fetchStatusVoid(for: request)
     }
@@ -105,6 +126,7 @@ class API_AuthService: AuthServiceProtocol {
             "images_base64": images.map {img in imageToBase64(img)!}
         ]
         request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         return APIResponse.fetchStatusVoid(for: request)
     }
@@ -120,6 +142,7 @@ class API_AuthService: AuthServiceProtocol {
             "nickname": nickname
         ]
         request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         return APIResponse.fetchStatusVoid(for: request)
     }
@@ -225,6 +248,9 @@ class API_AuthService: AuthServiceProtocol {
 
 
 
+
+
+
 class API_AuthServiceMock: AuthServiceProtocol {
     private let delayTime: TimeInterval = 0.5
     private var isLoggedIn = false
@@ -284,6 +310,14 @@ class API_AuthServiceMock: AuthServiceProtocol {
     }
     
     func addToHistory(productId: Int, timestamp: String) -> AnyPublisher<Void, APIError> {
+        guard isLoggedIn else { return Fail(error: APIError.unauthorized("Not logged in")).eraseToAnyPublisher() }
+        return Just(())
+            .setFailureType(to: APIError.self)
+            .delay(for: .seconds(delayTime), scheduler: RunLoop.main)
+            .eraseToAnyPublisher()
+    }
+    
+    func addToHistory(entries: [ScanHistoryEntry]) -> AnyPublisher<Void, APIError> {
         guard isLoggedIn else { return Fail(error: APIError.unauthorized("Not logged in")).eraseToAnyPublisher() }
         return Just(())
             .setFailureType(to: APIError.self)

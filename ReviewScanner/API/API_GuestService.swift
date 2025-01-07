@@ -11,15 +11,17 @@ import Combine
 protocol GuestServiceProtocol {
     func fetchProductBarcode(barcode:String) -> AnyPublisher<ProductData, APIError>
     func fetchProductId(id:Int) -> AnyPublisher<ProductData, APIError>
-    func fetchProductsIds(ids:[Int]) -> AnyPublisher<[ProductShortData], APIError>
+    func fetchProductsIds(ids:[Int]) -> AnyPublisher<[ProductData], APIError>
 }
 
+
 class API_GuestService: GuestServiceProtocol{
-    let baseURL: URL = .init(string: "http://localhost:8080")!
+    let baseURL: URL = .init(string: "http://127.0.0.1:8080")!
     
     func fetchProductBarcode(barcode: String) -> AnyPublisher<ProductData, APIError> {
         let url = baseURL.appendingPathComponent("/products/get-by-barcode")
             .appending(queryItems: [URLQueryItem(name: "barcode", value: barcode)])
+        print(url)
         return APIResponse.fetchData(for: URLRequest(url: url))
     }
     
@@ -28,7 +30,7 @@ class API_GuestService: GuestServiceProtocol{
         return APIResponse.fetchData(for: URLRequest(url: url))
     }
     
-    func fetchProductsIds(ids: [Int]) -> AnyPublisher<[ProductShortData], APIError> {
+    func fetchProductsIds(ids: [Int]) -> AnyPublisher<[ProductData], APIError> {
         let ids_string = ids.map { String($0) }.joined(separator: ",")
         let url = baseURL.appendingPathComponent("get-by-id-list")
             .appending(queryItems: [URLQueryItem(name: "ids", value: ids_string)])
@@ -147,16 +149,17 @@ class API_GuestMock: GuestServiceProtocol {
         }
     }
 
-    func fetchProductsIds(ids: [Int]) -> AnyPublisher<[ProductShortData], APIError> {
+    func fetchProductsIds(ids: [Int]) -> AnyPublisher<[ProductData], APIError> {
         let products = ids.map { id in
-            ProductShortData(
+            ProductData(
                 id: id,
                 name: "Mock Product \(id)",
                 description: "This is a mock product description for product \(id).",
                 image: "https://v.wpimg.pl/NjAuanBlYQsgFxddbRdsHmNPQwcrTmJINFdbTG1VfVI5QFNWbQVgHTFbEQJtDWEMbh8RCyVDfV93RFlBKxwmBS8QPgwjGCsYKBQ-WHRcYAAxEAZMPw",
                 barcode: "barcode_\(id)",
                 average_grade: Double.random(in: 1.0...5.0),
-                grade_count: Int.random(in: 1...100)
+                grade_count: Int.random(in: 1...100),
+                reviews: []
             )
         }
 
