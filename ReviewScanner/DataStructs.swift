@@ -55,7 +55,7 @@ struct ShopData: Decodable {
     let name: String
 }
 
-struct ScanHistoryEntry: Decodable {
+struct ScanHistoryEntry: Codable {
     let id: Int
     let timestamp: String
 }

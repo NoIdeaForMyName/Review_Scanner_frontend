@@ -10,7 +10,7 @@ struct ProductPageView: View {
     let productData: ProductData
     
     @State private var isDescriptionExpanded: Bool = false
-        
+    
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
@@ -94,6 +94,35 @@ struct ProductPageView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .background(Gradient(colors: gradientColors))
+        
+        .onAppear() {
+            if productData.id == -1 {
+                return
+            }
+            
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "dd.MM.yyyy"
+            let newEntry = ScanHistoryEntry(id: productData.id, timestamp: dateFormatter.string(from: Date.now))
+
+            // Retrieve existing history from UserDefaults
+            var localHistory: [ScanHistoryEntry] = []
+            if let data = UserDefaults.standard.data(forKey: "scan-history"),
+               let decodedHistory = try? JSONDecoder().decode([ScanHistoryEntry].self, from: data) {
+                localHistory = decodedHistory
+            }
+
+            // Update or append new entry
+            if let index = localHistory.firstIndex(where: { $0.id == newEntry.id }) {
+                localHistory[index] = newEntry
+            } else {
+                localHistory.append(newEntry)
+            }
+
+            // Save updated history back to UserDefaults
+            if let encodedData = try? JSONEncoder().encode(localHistory) {
+                UserDefaults.standard.set(encodedData, forKey: "scan-history")
+            }
+        }
 
     }
 }

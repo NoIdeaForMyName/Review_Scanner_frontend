@@ -14,8 +14,8 @@ protocol AuthServiceProtocol {
     func login(email: String, password: String) -> AnyPublisher<LoggingData, APIError>
     func refreshToken() -> AnyPublisher<Void, APIError>
     func logout() -> AnyPublisher<Void, APIError>
-    func addToHistory(barcode: String) -> AnyPublisher<Void, APIError>
-    func addToHistory(productId: Int) -> AnyPublisher<Void, APIError>
+    func addToHistory(barcode: String, timestamp: String) -> AnyPublisher<Void, APIError>
+    func addToHistory(productId: Int, timestamp: String) -> AnyPublisher<Void, APIError>
     func fetchScanHistory() -> AnyPublisher<[ScanHistoryEntry], APIError>
     func fetchMyReviews() -> AnyPublisher<[ReviewData], APIError>
     func addProduct(barcode: String, name: String, description: String, image: UIImage) -> AnyPublisher<Void, APIError>
@@ -26,7 +26,7 @@ protocol AuthServiceProtocol {
 class API_AuthService: AuthServiceProtocol {
     let baseURL: URL = .init(string: "http://localhost:8080")!
     
-    func addToHistory(barcode: String) -> AnyPublisher<Void, APIError> {
+    func addToHistory(barcode: String, timestamp: String) -> AnyPublisher<Void, APIError> {
         let url = baseURL.appendingPathComponent("add-to-history")
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -34,13 +34,16 @@ class API_AuthService: AuthServiceProtocol {
         if let csrfToken = UserDefaults.standard.string(forKey: "csrf_access_token") {
             request.setValue(csrfToken, forHTTPHeaderField: "X-CSRF-TOKEN")
         }
-        let body = ["barcode": barcode]
+        let body: [String: Any] = [
+            "barcode": barcode,
+            "timestamp": timestamp
+        ]
         request.httpBody = try? JSONSerialization.data(withJSONObject: body)
         
         return APIResponse.fetchStatusVoid(for: request)
     }
     
-    func addToHistory(productId: Int) -> AnyPublisher<Void, APIError> {
+    func addToHistory(productId: Int, timestamp: String) -> AnyPublisher<Void, APIError> {
         let url = baseURL.appendingPathComponent("add-to-history")
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -48,7 +51,10 @@ class API_AuthService: AuthServiceProtocol {
         if let csrfToken = UserDefaults.standard.string(forKey: "csrf_access_token") {
             request.setValue(csrfToken, forHTTPHeaderField: "X-CSRF-TOKEN")
         }
-        let body = ["id": productId]
+        let body: [String: Any] = [
+            "id": productId,
+            "timestamp": timestamp
+        ]
         request.httpBody = try? JSONSerialization.data(withJSONObject: body)
         
         return APIResponse.fetchStatusVoid(for: request)
@@ -269,7 +275,7 @@ class API_AuthServiceMock: AuthServiceProtocol {
             .eraseToAnyPublisher()
     }
     
-    func addToHistory(barcode: String) -> AnyPublisher<Void, APIError> {
+    func addToHistory(barcode: String, timestamp: String) -> AnyPublisher<Void, APIError> {
         guard isLoggedIn else { return Fail(error: APIError.unauthorized("Not logged in")).eraseToAnyPublisher() }
         return Just(())
             .setFailureType(to: APIError.self)
@@ -277,7 +283,7 @@ class API_AuthServiceMock: AuthServiceProtocol {
             .eraseToAnyPublisher()
     }
     
-    func addToHistory(productId: Int) -> AnyPublisher<Void, APIError> {
+    func addToHistory(productId: Int, timestamp: String) -> AnyPublisher<Void, APIError> {
         guard isLoggedIn else { return Fail(error: APIError.unauthorized("Not logged in")).eraseToAnyPublisher() }
         return Just(())
             .setFailureType(to: APIError.self)

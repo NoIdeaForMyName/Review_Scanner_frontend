@@ -63,7 +63,7 @@ struct BarcodeScannerView: View {
                 }
                 
                 .navigationDestination(isPresented: $barcodeScannerViewModel.success) {
-                    ProductPageView(productData: barcodeScannerViewModel.productData ?? ProductData(id: 0, name: "test", description: "test", image: "", barcode: "123", average_grade: 5, grade_count: 1, reviews: []))
+                    ProductPageView(productData: barcodeScannerViewModel.productData ?? ProductData(id: -1, name: "test", description: "test", image: "", barcode: "123", average_grade: 5, grade_count: 1, reviews: []))
                     //TestFoundBarcodeView(barcode: barcode)
                 }
                 

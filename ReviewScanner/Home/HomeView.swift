@@ -42,7 +42,7 @@ struct HomeView: View {
                 
                 MenuButton(iconName: "barcode.viewfinder", description: "Scan", nextView: BarcodeScannerView())
                 
-                MenuButton(iconName: "clock", description: "History", nextView: TestView())
+                MenuButton(iconName: "clock", description: "History", nextView: HistoryView())
 
                 if environmentData.userData.isLoggedIn {
                     MenuButton(iconName: "star.bubble", description: "My reviews", nextView: UserReviewsView(reviews: []))
