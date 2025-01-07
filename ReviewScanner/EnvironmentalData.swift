@@ -8,21 +8,21 @@
 import Foundation
 import Combine
 
-class EnvironmentData {
+class EnvironmentData: ObservableObject {
     var userData: ThisUserData = .init()
     
     let guestService: GuestServiceProtocol = API_GuestService()
     let authService: AuthServiceProtocol = API_AuthService()
-    
+        
 }
 
-class ThisUserData {
-    var email: String = ""
-    var nickname: String = ""
-    
-    public func isLoggedIn() -> Bool {
-        return email != ""
-    }
+class ThisUserData: ObservableObject {
+    @Published var email: String = ""
+    @Published var nickname: String = ""
+        
+    var isLoggedIn: Bool {
+            return !email.isEmpty
+        }
     
     public func clearData() -> Void {
         email = ""

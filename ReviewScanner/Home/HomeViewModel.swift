@@ -14,7 +14,7 @@ class HomeViewModel: ObservableObject {
 
     private var logoutCancellable: AnyCancellable? // Do przechowywania subskrypcji
 
-    public func logoutAction() {
+    public func logoutAction(environmentData: EnvironmentData) {
         errorMessage = nil // Wyczyść poprzedni błąd
 
         logoutCancellable = environmentData.authService.logout()

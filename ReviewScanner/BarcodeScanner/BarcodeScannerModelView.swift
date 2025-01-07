@@ -16,8 +16,9 @@ class BarcodeScannerModelView: ObservableObject {
     @Published public var isLoading: Bool = false
 
     private var productDataCancellable: AnyCancellable? // Do przechowywania subskrypcji
+    
 
-    public func fetchProductData(barcode: String) -> Void {
+    public func fetchProductData(environmentData: EnvironmentData, barcode: String) -> Void {
         errorData = nil // Wyczyść poprzedni błąd
         isLoading = true
 

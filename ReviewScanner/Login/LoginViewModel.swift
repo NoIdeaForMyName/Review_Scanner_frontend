@@ -17,7 +17,7 @@ class LoginViewModel: ObservableObject {
 
     private var loginCancellable: AnyCancellable? // Do przechowywania subskrypcji
 
-    public func loginAction() {
+    public func loginAction(environmentData: EnvironmentData) {
         errorMessage = nil // Wyczyść poprzedni błąd
         isLoading = true
 

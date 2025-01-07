@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-let environmentData = EnvironmentData()
+//let environmentData = EnvironmentData()
 
 let gradientColors: [Color] = [
     .gradientTop,
@@ -22,10 +22,12 @@ extension UIScreen {
 
 @main
 struct ReviewScannerApp: App {
+    @StateObject var environmentData = EnvironmentData()
 
     var body: some Scene {
         WindowGroup {
             HomeView()
+                .environmentObject(environmentData)
         }
     }
 }

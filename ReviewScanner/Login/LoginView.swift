@@ -2,6 +2,8 @@ import SwiftUI
 import Combine
 
 struct LoginView: View {
+    @EnvironmentObject var environmentData: EnvironmentData
+    
     @StateObject var loginViewModel: LoginViewModel = LoginViewModel()
     
     var body: some View {
@@ -52,7 +54,7 @@ struct LoginView: View {
                         }
                         
                         Button(action: {
-                            loginViewModel.loginAction()
+                            loginViewModel.loginAction(environmentData: environmentData)
                         }) {
                             Text("Login")
                                 .font(.headline)

@@ -2,10 +2,12 @@ import SwiftUI
 import CodeScanner
 
 struct BarcodeScannerView: View {
+    @EnvironmentObject var environmentData: EnvironmentData
+    
     @State var barcode: String = ""
     @State var barcodeFound: Bool = false
     
-    @StateObject var barcodeScannerViewModel = BarcodeScannerModelView()
+    @StateObject var barcodeScannerViewModel: BarcodeScannerModelView = BarcodeScannerModelView()
     @State var productPageReady = false
 
     var scannerSheet: some View {
@@ -56,7 +58,7 @@ struct BarcodeScannerView: View {
                 
                 .onChange(of: barcodeFound) { _, found in
                     if found {
-                        barcodeScannerViewModel.fetchProductData(barcode: barcode)
+                        barcodeScannerViewModel.fetchProductData(environmentData: environmentData, barcode: barcode)
                     }
                 }
                 
