@@ -22,7 +22,8 @@ struct ProductNotFoundView: View {
                 
                 Spacer()
                 
-                SmallButton(text: "Add product", destination: AddProductView())
+                // TODO: pass actual barcode
+                SmallButton(text: "Add product", destination: AddProductView(barcode: "1234567891011"))
                 
                 SmallButton(text: "Cancel", destination: HomeView())
                     
