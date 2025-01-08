@@ -126,11 +126,10 @@ struct AddReviewView: View {
                 .background(Gradient(colors: gradientColors))
                 
                 .navigationDestination(isPresented: $addReviewViewModel.error) {
-                    switch addReviewViewModel.errorData {
-                    case .networkingError:
-                        Text("Networking error")
-                    default:
-                        Text("Unknown error")
+                    if let error = addReviewViewModel.errorData {
+                        Text(error.localizedDescription)
+                            .foregroundColor(.red)
+                            .font(.footnote)
                     }
                 }
                 

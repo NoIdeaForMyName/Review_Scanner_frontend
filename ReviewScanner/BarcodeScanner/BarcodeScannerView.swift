@@ -68,11 +68,17 @@ struct BarcodeScannerView: View {
                 }
                 
                 .navigationDestination(isPresented: $barcodeScannerViewModel.error) {
-                    if let error = barcodeScannerViewModel.errorData {
-                        Text(error.localizedDescription)
-                            .foregroundColor(.red)
-                            .font(.footnote)
+                    switch barcodeScannerViewModel.errorData {
+                    case .notFound:
+                        ProductNotFoundView()
+                    default:
+                        if let error = barcodeScannerViewModel.errorData {
+                            Text(error.localizedDescription)
+                                .foregroundColor(.red)
+                                .font(.footnote)
+                        }
                     }
+                    
                 }
                 
                 if barcodeScannerViewModel.isLoading {
