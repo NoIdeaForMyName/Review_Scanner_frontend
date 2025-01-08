@@ -1,4 +1,5 @@
 import SwiftUI
+import PhotosUI
 import Combine
 
 struct DecimalTextField: View {
@@ -21,6 +22,8 @@ extension NumberFormatter {
 }
 
 struct AddReviewView: View {
+    static let MAX_REVIEW_PHOTOS_COUNT = 5
+    
     @EnvironmentObject var environmentData: EnvironmentData
     @StateObject var addReviewViewModel: AddReviewViewModel = AddReviewViewModel()
     
@@ -32,6 +35,9 @@ struct AddReviewView: View {
     @State var price: Double = 0
     @State var shopName: String = ""
     @State var reviewBody: String = ""
+    @State var media: [UIImage] = []
+    
+    @State private var photosPickerItems: [PhotosPickerItem] = []
     
     var body: some View {
         NavigationStack {
@@ -41,81 +47,124 @@ struct AddReviewView: View {
                 VStack() {
                     Text("Add review")
                     
-                    VStack(spacing: 25) {
-                        VStack(alignment: .leading, spacing: 20) {
-                            Text(productName)
-                            
-                            HStack {
-                                Text("Rating")
-                                    .frame(width: 85, alignment: .leading)
-                                    .onTapGesture {
-                                        rating = 0
-                                    }
+                    ScrollView {
+                        VStack(spacing: 25) {
+                            VStack(alignment: .leading, spacing: 20) {
+                                Text(productName)
                                 
-                                ForEach(1...5, id: \.self) { star in
-                                    Image(systemName: star <= rating ? "star.fill" : "star")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 40, height: 40)
-                                        .foregroundColor(star <= rating ? .yellow : .gray)
+                                HStack {
+                                    Text("Rating")
+                                        .frame(width: 85, alignment: .leading)
                                         .onTapGesture {
-                                            rating = star
+                                            rating = 0
                                         }
+                                    
+                                    ForEach(1...5, id: \.self) { star in
+                                        Image(systemName: star <= rating ? "star.fill" : "star")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 40, height: 40)
+                                            .foregroundColor(star <= rating ? .yellow : .gray)
+                                            .onTapGesture {
+                                                rating = star
+                                            }
+                                    }
+                                }
+                                
+                                HStack {
+                                    Text("Title")
+                                        .frame(width: 85, alignment: .leading)
+                                    TextField("Main thought", text: $reviewTitle)
+                                        .padding()
+                                        .background(Color(.secondarySystemBackground))
+                                        .cornerRadius(8)
+                                }
+                                
+                                HStack {
+                                    Text("Price")
+                                        .frame(width: 85, alignment: .leading)
+                                    DecimalTextField(value: $price, placeholder: "")
+                                        .padding()
+                                        .background(Color(.secondarySystemBackground))
+                                        .cornerRadius(8)
+                                }
+                                
+                                HStack {
+                                    Text("Shop")
+                                        .frame(width: 85, alignment: .leading)
+                                    TextField("Shop name", text: $shopName)
+                                        .padding()
+                                        .background(Color(.secondarySystemBackground))
+                                        .cornerRadius(8)
+                                }
+                                
+                                Text("Description")
+                                
+                                TextEditor(text: $reviewBody)
+                                    .padding(8)
+                                    .background(Color(.secondarySystemBackground))
+                                    .cornerRadius(8)
+                                    .frame(minHeight: 100, maxHeight: 100)
+                                
+                                Text("Multimedia")
+                                
+                                VStack(alignment: .leading) {
+                                    ScrollView(.horizontal) {
+                                        HStack(spacing: 20) {
+                                            ForEach(0..<media.count, id: \.self) { i in
+                                                Image(uiImage: media[i])
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fill)
+                                                    .frame(width: 100, height: 100)
+                                                    .clipShape(RoundedRectangle(cornerRadius: 5))
+                                            }
+                                        }
+                                    }
+                                    
+                                    PhotosPicker(selection: $photosPickerItems, maxSelectionCount: AddReviewView.MAX_REVIEW_PHOTOS_COUNT, selectionBehavior: .ordered, matching: .images) {
+                                            Text("Select photos")
+                                                .font(.headline)
+                                                .padding()
+                                                .background(Color.gradientBottom)
+                                                .foregroundColor(.black)
+                                                .cornerRadius(8)
+                                    }
+                                    .padding(.top)
+                                }
+                                .onChange(of: photosPickerItems) { _, _ in
+                                    Task {
+                                        if !photosPickerItems.isEmpty {
+                                            media.removeAll()
+                                        }
+                                        
+                                        for item in photosPickerItems {
+                                            if let data = try? await item.loadTransferable(type: Data.self) {
+                                                if let image = UIImage(data: data) {
+                                                    media.append(image)
+                                                }
+                                            }
+                                        }
+                                        
+                                        photosPickerItems.removeAll()
+                                    }
                                 }
                             }
+                            .padding()
+                            .background(Color(.systemBackground))
+                            .cornerRadius(20)
+                            .shadow(radius: 5)
                             
-                            HStack {
-                                Text("Title")
-                                    .frame(width: 85, alignment: .leading)
-                                TextField("Main thought", text: $reviewTitle)
+                            Button(action: {
+                                addReviewViewModel.addReviewAction(environmentData: environmentData, productId: productId, rating: rating, title: reviewTitle, price: price, shopName: shopName, reviewBody: reviewBody, media: media)
+                            }) {
+                                Text("Add review")
+                                    .font(.headline)
+                                    .frame(maxWidth: .infinity)
                                     .padding()
-                                    .background(Color(.secondarySystemBackground))
+                                    .background(Color.button)
+                                    .foregroundColor(.black)
                                     .cornerRadius(8)
                             }
-                            
-                            HStack {
-                                Text("Price")
-                                    .frame(width: 85, alignment: .leading)
-                                DecimalTextField(value: $price, placeholder: "")
-                                    .padding()
-                                    .background(Color(.secondarySystemBackground))
-                                    .cornerRadius(8)
-                            }
-                            
-                            HStack {
-                                Text("Shop")
-                                    .frame(width: 85, alignment: .leading)
-                                TextField("Shop name", text: $shopName)
-                                    .padding()
-                                    .background(Color(.secondarySystemBackground))
-                                    .cornerRadius(8)
-                            }
-                            
-                            Text("Description")
-                            
-                            TextEditor(text: $reviewBody)
-                                .padding(8)
-                                .background(Color(.secondarySystemBackground))
-                                .cornerRadius(8)
-                                .frame(maxHeight: 100)
-                            
-                            Text("Multimedia") // TODO
-                        }
-                        .padding()
-                        .background(Color(.systemBackground))
-                        .cornerRadius(20)
-                        .shadow(radius: 5)
-                        
-                        Button(action: {
-                            addReviewViewModel.addReviewAction(environmentData: environmentData, productId: productId, rating: rating, title: reviewTitle, price: price, shopName: shopName, reviewBody: reviewBody, media: []) // media TODO
-                        }) {
-                            Text("Add review")
-                                .font(.headline)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color.button)
-                                .foregroundColor(.black)
-                                .cornerRadius(8)
                         }
                     }
                     

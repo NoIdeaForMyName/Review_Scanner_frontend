@@ -16,7 +16,7 @@ extension UIImage {
 class AddProductViewModel: ObservableObject {
     @Published public var name: String = ""
     @Published public var description: String = ""
-    @Published public var mainPhoto: UIImage? = UIImage.init(size: CGSize(width: 100, height: 100), color: .gray)
+    @Published public var mainPhoto: UIImage?
     @Published public var errorMessage: String? // Do przechowywania błędów logowania
     @Published public var isLoading: Bool = false
     @Published public var isAdded: Bool = false

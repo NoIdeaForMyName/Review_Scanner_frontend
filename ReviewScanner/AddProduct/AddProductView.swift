@@ -1,10 +1,12 @@
 import SwiftUI
+import PhotosUI
 import Combine
 
 struct AddProductView: View {
     @EnvironmentObject var environmentData: EnvironmentData
     let barcode: String
     @StateObject var addProductViewModel: AddProductViewModel = AddProductViewModel()
+    @State private var photosPickerItem: PhotosPickerItem?
     
     init(barcode: String) {
         self.barcode = barcode
@@ -41,6 +43,35 @@ struct AddProductView: View {
                                 .frame(maxHeight: 200)
                             
                             Text("Main photo")
+                            
+                            PhotosPicker(selection: $photosPickerItem, matching: .images) {
+                                if addProductViewModel.mainPhoto != nil {
+                                    Image(uiImage: addProductViewModel.mainPhoto!)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: 100, height: 100)
+                                        .clipShape(RoundedRectangle(cornerRadius: 5))
+                                } else {
+                                    Image(systemName: "photo.badge.plus.fill")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 100, height: 100)
+                                        .foregroundColor(.black)
+                                }
+                            }
+                            .onChange(of: photosPickerItem) { _, _ in
+                                Task {
+                                    if let photosPickerItem,
+                                       let data = try? await photosPickerItem.loadTransferable(type: Data.self) {
+                                        if let image = UIImage(data: data) {
+                                            addProductViewModel.mainPhoto = image
+                                        }
+                                    }
+                                    
+                                    photosPickerItem = nil
+                                }
+                                
+                            }
                         }
                         .padding()
                         .background(Color(.systemBackground))
