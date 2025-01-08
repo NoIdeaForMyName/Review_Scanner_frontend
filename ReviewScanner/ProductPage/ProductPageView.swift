@@ -62,15 +62,15 @@ struct ProductPageView: View {
                     }
                 }
                 
-                Button(action: {
-                    // TODO: add review
-                }) {
-                    Text("Add review")
-                        .font(.headline)
-                        .padding()
-                        .background(Color.button)
-                        .foregroundColor(.black)
-                        .cornerRadius(8)
+                if environmentData.userData.isLoggedIn {
+                    NavigationLink(destination: AddReviewView(productId: productData.id, productName: productData.name)) {
+                        Text("Add review")
+                            .font(.headline)
+                            .padding()
+                            .background(Color.button)
+                            .foregroundColor(.black)
+                            .cornerRadius(8)
+                    }
                 }
                 
                 VStack {
