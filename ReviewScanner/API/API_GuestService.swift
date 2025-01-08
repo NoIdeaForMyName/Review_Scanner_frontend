@@ -32,7 +32,7 @@ class API_GuestService: GuestServiceProtocol{
     
     func fetchProductsIds(ids: [Int]) -> AnyPublisher<[ProductData], APIError> {
         let ids_string = ids.map { String($0) }.joined(separator: ",")
-        let url = baseURL.appendingPathComponent("get-by-id-list")
+        let url = baseURL.appendingPathComponent("products/get-by-id-list")
             .appending(queryItems: [URLQueryItem(name: "ids", value: ids_string)])
         return APIResponse.fetchData(for: URLRequest(url: url))
     }

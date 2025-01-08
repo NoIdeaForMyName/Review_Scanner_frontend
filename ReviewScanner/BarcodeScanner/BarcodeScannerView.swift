@@ -74,7 +74,7 @@ struct BarcodeScannerView: View {
                     case .networkingError:
                         Text("Networking error")
                     default:
-                        Text("Other error")
+                        Text("Unknown error")
                     }
                     
                 }
