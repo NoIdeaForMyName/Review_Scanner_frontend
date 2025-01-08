@@ -76,10 +76,6 @@ struct HomeView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Gradient(colors: gradientColors))
                 
-                .navigationDestination(isPresented: $homeViewModel.logoutPerformed) {
-                    HomeView()
-                }
-                
                 .onAppear() {
                     print("Is user logged in: \(environmentData.userData.isLoggedIn)")
                 }
@@ -90,26 +86,26 @@ struct HomeView: View {
                     }
                 }
                 
-                .navigationDestination(isPresented: $homeViewModel.fetchingFullScanHistoryDataPerformed) {
-                    RecentlyViewedProductsView(fullScanHistoryList: homeViewModel.fullScanHistoryData)
-                }
-                
-                .navigationDestination(isPresented: $homeViewModel.error) {
-                    switch homeViewModel.errorData {
-                    case .networkingError:
-                        Text("Networking error")
-                    default:
-                        Text("Unknown error")
-                    }
-                    
-                }
-                
                 if homeViewModel.isLoading {
                     CircleLoaderView()
                 }
                 
             }
-            
+            .navigationDestination(isPresented: $homeViewModel.logoutPerformed) {
+                HomeView()
+            }
+            .navigationDestination(isPresented: $homeViewModel.fetchingFullScanHistoryDataPerformed) {
+                RecentlyViewedProductsView(fullScanHistoryList: homeViewModel.fullScanHistoryData)
+            }
+            .navigationDestination(isPresented: $homeViewModel.error) {
+                switch homeViewModel.errorData {
+                case .networkingError:
+                    Text("Networking error")
+                default:
+                    Text("Unknown error")
+                }
+                
+            }
         }
     }
 }

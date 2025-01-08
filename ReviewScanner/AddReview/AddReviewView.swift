@@ -180,16 +180,15 @@ struct AddReviewView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Gradient(colors: gradientColors))
                 
-                .navigationDestination(isPresented: $addReviewViewModel.addingReviewFinished) {
-                    InfoView(info: "Review added", nextView: HomeView())
-                }
                 
                 if addReviewViewModel.isLoading {
                     CircleLoaderView()
                 }
                 
             }
-            
+            .navigationDestination(isPresented: $addReviewViewModel.addingReviewFinished) {
+                InfoView(info: "Review added", nextView: HomeView())
+            }
         }
     }
 

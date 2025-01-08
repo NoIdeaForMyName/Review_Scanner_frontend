@@ -33,21 +33,20 @@ struct RecentlyViewedProductsView: View {
                 }
                 .background(Gradient(colors: gradientColors))
                 
-                .navigationDestination(isPresented: $recentlyViewedProductsViewModel.success) {
-                    ProductPageView(productData: recentlyViewedProductsViewModel.productData ?? ProductData(id: -1, name: "test", description: "test", image: "", barcode: "123", average_grade: 5, grade_count: 1, reviews: []))
-                }
-                
-                .navigationDestination(isPresented: $recentlyViewedProductsViewModel.error) {
-                    switch recentlyViewedProductsViewModel.errorData {
-                    case .networkingError:
-                        Text("Networking error")
-                    default:
-                        Text("Unknown error")
-                    }
-                }
-                
                 if recentlyViewedProductsViewModel.isLoading {
                     CircleLoaderView()
+                }
+            }
+            .navigationDestination(isPresented: $recentlyViewedProductsViewModel.success) {
+                ProductPageView(productData: recentlyViewedProductsViewModel.productData ?? ProductData(id: -1, name: "test", description: "test", image: "", barcode: "123", average_grade: 5, grade_count: 1, reviews: []))
+            }
+            
+            .navigationDestination(isPresented: $recentlyViewedProductsViewModel.error) {
+                switch recentlyViewedProductsViewModel.errorData {
+                case .networkingError:
+                    Text("Networking error")
+                default:
+                    Text("Unknown error")
                 }
             }
         }

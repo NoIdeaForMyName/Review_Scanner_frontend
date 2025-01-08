@@ -72,13 +72,12 @@ struct LoginView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Gradient(colors: gradientColors))
                 
-                .navigationDestination(isPresented: $loginViewModel.isLoggedIn) {
-                    HomeView()
-                }
-                
                 if loginViewModel.isLoading {
                     CircleLoaderView()
                 }
+            }
+            .navigationDestination(isPresented: $loginViewModel.isLoggedIn) {
+                HomeView()
             }
         }
     }

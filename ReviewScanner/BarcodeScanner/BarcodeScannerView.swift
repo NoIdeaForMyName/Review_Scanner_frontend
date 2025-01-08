@@ -62,31 +62,29 @@ struct BarcodeScannerView: View {
                     }
                 }
                 
-                .navigationDestination(isPresented: $barcodeScannerViewModel.success) {
-                    ProductPageView(productData: barcodeScannerViewModel.productData ?? ProductData(id: -1, name: "test", description: "test", image: "", barcode: "123", average_grade: 5, grade_count: 1, reviews: []))
-                    //TestFoundBarcodeView(barcode: barcode)
-                }
-                
-                .navigationDestination(isPresented: $barcodeScannerViewModel.error) {
-                    switch barcodeScannerViewModel.errorData {
-                    case .notFound:
-                        ProductNotFoundView(barcode: barcode)
-                    default:
-                        if let error = barcodeScannerViewModel.errorData {
-                            Text(error.localizedDescription)
-                                .foregroundColor(.red)
-                                .font(.footnote)
-                        }
-                    }
-                    
-                }
-                
                 if barcodeScannerViewModel.isLoading {
                     CircleLoaderView()
                 }
                 
             }
+            .navigationDestination(isPresented: $barcodeScannerViewModel.success) {
+                ProductPageView(productData: barcodeScannerViewModel.productData ?? ProductData(id: -1, name: "test", description: "test", image: "", barcode: "123", average_grade: 5, grade_count: 1, reviews: []))
+                //TestFoundBarcodeView(barcode: barcode)
+            }
             
+            .navigationDestination(isPresented: $barcodeScannerViewModel.error) {
+                switch barcodeScannerViewModel.errorData {
+                case .notFound:
+                    ProductNotFoundView(barcode: barcode)
+                default:
+                    if let error = barcodeScannerViewModel.errorData {
+                        Text(error.localizedDescription)
+                            .foregroundColor(.red)
+                            .font(.footnote)
+                    }
+                }
+                
+            }
         }
 
     }

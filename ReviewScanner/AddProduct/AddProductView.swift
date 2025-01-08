@@ -95,11 +95,7 @@ struct AddProductView: View {
                                 .foregroundColor(.black)
                                 .cornerRadius(8)
                         }
-                        .navigationDestination(isPresented: $addProductViewModel.isAdded) {
-                            if let prodData = addProductViewModel.productData {
-                                ProductPageView(productData: prodData)
-                            }
-                        }
+                        
                     }
                     
                     Spacer()
@@ -110,6 +106,11 @@ struct AddProductView: View {
                 
                 if addProductViewModel.isLoading {
                     CircleLoaderView()
+                }
+            }
+            .navigationDestination(isPresented: $addProductViewModel.isAdded) {
+                if let prodData = addProductViewModel.productData {
+                    ProductPageView(productData: prodData)
                 }
             }
         }
