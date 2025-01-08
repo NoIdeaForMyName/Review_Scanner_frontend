@@ -84,6 +84,17 @@ class HomeViewModel: ObservableObject {
             })
     }
     
+    public func resetValues() {
+        errorData = nil
+        error = false
+        logoutPerformed = false
+        fetchingScanHistoryDataPerformed = false
+        fetchingFullScanHistoryDataPerformed = false
+        scanHistoryData = []
+        fullScanHistoryData = []
+        isLoading = false
+    }
+    
     private func mergeIntoFullScanHistoryList(scanHistoryList: [ScanHistoryEntry], productDataList: [ProductData]) -> [FullScanHistoryEntry] {
         let sortedScanHistoryList = scanHistoryList.sorted() { $0.id < $1.id }
         let sortedProductDataList = productDataList.sorted() { $0.id < $1.id }

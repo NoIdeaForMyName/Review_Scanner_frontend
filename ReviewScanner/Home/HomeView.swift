@@ -77,11 +77,13 @@ struct HomeView: View {
                 .background(Gradient(colors: gradientColors))
                 
                 .onAppear() {
+                    homeViewModel.resetValues()
                     print("Is user logged in: \(environmentData.userData.isLoggedIn)")
                 }
                 
                 .onChange(of: homeViewModel.fetchingScanHistoryDataPerformed) { _, fetched in
                     if fetched {
+                        print("ndsauwdniwd")
                         homeViewModel.fetchFullScanHistoryData(environmentData: environmentData, scanHistoryList: homeViewModel.scanHistoryData)
                     }
                 }
