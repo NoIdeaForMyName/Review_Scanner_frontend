@@ -66,7 +66,7 @@ class HomeViewModel: ObservableObject {
     public func fetchFullScanHistoryData(environmentData: EnvironmentData, scanHistoryList: [ScanHistoryEntry]) {
         errorData = nil // Wyczyść poprzedni błąd
         isLoading = true
-        
+
         fetchCancellable = environmentData.guestService.fetchProductsIds(ids: scanHistoryList.map() { $0.id })
             .receive(on: DispatchQueue.main) // Zapewnij, że aktualizacje UI będą na głównym wątku
             .sink(receiveCompletion: { [weak self] completion in
