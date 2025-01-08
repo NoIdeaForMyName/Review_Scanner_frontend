@@ -28,7 +28,14 @@ class AddProductViewModel: ObservableObject {
             errorMessage = nil // Wyczyść poprzedni błąd
             isLoading = true
             
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "dd.MM.yyyy"
+            let timestamp = dateFormatter.string(from: Date())
+            
             addProductCancellable = environmentData.authService.addProduct(barcode: barcode, name: name, description: description, image: mainPhoto!)
+                .flatMap { [barcode, timestamp] in
+                    environmentData.authService.addToHistory(barcode: barcode, timestamp: timestamp)
+                }
                 .flatMap { [barcode] in  // Chain with the second request
                     environmentData.guestService.fetchProductBarcode(barcode: barcode)
                 }
