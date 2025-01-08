@@ -154,6 +154,12 @@ struct AddReviewView: View {
                             .cornerRadius(20)
                             .shadow(radius: 5)
                             
+                            if let error = addReviewViewModel.errorData {
+                                Text(error)
+                                    .foregroundColor(.red)
+                                    .font(.footnote)
+                            }
+                            
                             Button(action: {
                                 addReviewViewModel.addReviewAction(environmentData: environmentData, productId: productId, rating: rating, title: reviewTitle, price: price, shopName: shopName, reviewBody: reviewBody, media: media)
                             }) {
@@ -173,14 +179,6 @@ struct AddReviewView: View {
                 .padding()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Gradient(colors: gradientColors))
-                
-                .navigationDestination(isPresented: $addReviewViewModel.error) {
-                    if let error = addReviewViewModel.errorData {
-                        Text(error.localizedDescription)
-                            .foregroundColor(.red)
-                            .font(.footnote)
-                    }
-                }
                 
                 .navigationDestination(isPresented: $addReviewViewModel.addingReviewFinished) {
                     InfoView(info: "Review added", nextView: HomeView())

@@ -61,7 +61,7 @@ struct HomeView: View {
                     }
                     
                     if environmentData.userData.isLoggedIn {
-                        NavigationLink(destination: UserReviewsView(reviews: [])) {
+                        NavigationLink(destination: UserReviewsView()) {
                             MenuButton(iconName: "star.bubble", description: "My reviews")
                         }
                     }

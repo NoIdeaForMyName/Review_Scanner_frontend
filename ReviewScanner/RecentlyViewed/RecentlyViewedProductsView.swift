@@ -44,7 +44,6 @@ struct RecentlyViewedProductsView: View {
                     default:
                         Text("Unknown error")
                     }
-                    
                 }
                 
                 if recentlyViewedProductsViewModel.isLoading {

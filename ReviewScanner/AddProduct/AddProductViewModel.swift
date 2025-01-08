@@ -2,17 +2,6 @@ import Foundation
 import Combine
 import PhotosUI
 
-extension UIImage {
-    convenience init(size: CGSize, color: UIColor) {
-        UIGraphicsBeginImageContextWithOptions(size, false, 1)
-        color.setFill()
-        UIRectFill(CGRect(origin: .zero, size: size))
-        let image = UIGraphicsGetImageFromCurrentImageContext()!
-        UIGraphicsEndImageContext()
-        self.init(cgImage: image.cgImage!)
-    }
-}
-
 class AddProductViewModel: ObservableObject {
     @Published public var name: String = ""
     @Published public var description: String = ""
