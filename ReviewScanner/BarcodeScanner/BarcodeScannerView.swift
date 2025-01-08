@@ -58,6 +58,7 @@ struct BarcodeScannerView: View {
                 
                 .onChange(of: barcodeFound) { _, found in
                     if found {
+                        barcodeScannerViewModel.playScannerSound()
                         barcodeScannerViewModel.fetchProductData(environmentData: environmentData, barcode: barcode)
                     }
                 }

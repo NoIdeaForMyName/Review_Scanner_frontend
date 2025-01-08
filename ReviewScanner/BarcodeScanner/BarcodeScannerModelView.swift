@@ -16,7 +16,8 @@ class BarcodeScannerModelView: ObservableObject {
     @Published public var isLoading: Bool = false
 
     private var productDataCancellable: AnyCancellable? // Do przechowywania subskrypcji
-    
+
+    private let scannerSoundPlayer = ScannerSoundPlayer()
 
     public func fetchProductData(environmentData: EnvironmentData, barcode: String) -> Void {
         errorData = nil // Wyczyść poprzedni błąd
@@ -37,6 +38,10 @@ class BarcodeScannerModelView: ObservableObject {
             }, receiveValue: { [weak self] prodData in
                 self?.productData = prodData
             })
+    }
+    
+    public func playScannerSound() {
+        scannerSoundPlayer.playScannerSound()
     }
     
 }
