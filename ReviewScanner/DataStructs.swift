@@ -50,6 +50,15 @@ struct ScanHistoryEntry: Codable {
     let timestamp: String
 }
 
+struct FullScanHistoryEntry: Decodable {
+    let id: Int
+    let name: String
+    let description: String
+    let image: String
+    let average_grade: Double
+    let timestamp: String
+}
+
 struct ReviewMediaData: Decodable {
     let id: Int
     let url: String

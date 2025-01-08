@@ -7,13 +7,14 @@ struct HomeView: View {
     
     var body: some View {
         NavigationStack {
-            VStack {
+            
+            ZStack {
                 
-                //if environmentData.userData.isLoggedIn {
-                if environmentData.userData.isLoggedIn {
-                    HStack {
-                        Spacer()
-                        NavigationLink(destination: HomeView()) {
+                VStack {
+                    
+                    if environmentData.userData.isLoggedIn {
+                        HStack {
+                            Spacer()
                             Button(action: {
                                 homeViewModel.logoutAction(environmentData: environmentData)
                             }){
@@ -23,45 +24,92 @@ struct HomeView: View {
                             }
                         }
                     }
+                    
+                    Text("Review Scanner")
+                        .font(.largeTitle)
+                        .fontWeight(.semibold)
+                        .padding(.top, 50)
+                        .padding(.bottom, 10)
+                    
+                    if environmentData.userData.isLoggedIn {
+                        Text("Hello \(environmentData.userData.nickname)")
+                    }
+                    else {
+                        Text("Hello")
+                    }
+                    
+                    Spacer()
+                    
+                    NavigationLink(destination: BarcodeScannerView()) {
+                        MenuButton(iconName: "barcode.viewfinder", description: "Scan")
+                    }
+                    
+                    Button(action: {
+                        if (environmentData.userData.isLoggedIn) {
+                            homeViewModel.fetchScanHistoryData(environmentData: environmentData)
+                        }
+                        else {
+                            if let data = UserDefaults.standard.data(forKey: "scan-history"),
+                               let scanHistory = try? JSONDecoder().decode([ScanHistoryEntry].self, from: data) {
+                                homeViewModel.fetchFullScanHistoryData(environmentData: environmentData, scanHistoryList: scanHistory)
+                            } else {
+                                homeViewModel.fetchingFullScanHistoryDataPerformed = true
+                            }
+                        }
+                    }) {
+                        MenuButton(iconName: "clock", description: "History")
+                    }
+                    
+                    if environmentData.userData.isLoggedIn {
+                        NavigationLink(destination: UserReviewsView(reviews: [])) {
+                            MenuButton(iconName: "star.bubble", description: "My reviews")
+                        }
+                    }
+                    else {
+                        NavigationLink(destination: LoginView()) {
+                            MenuButton(iconName: "person.circle", description: "Log In")
+                        }
+                    }
+                    
+                }
+                .padding()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Gradient(colors: gradientColors))
+                
+                .navigationDestination(isPresented: $homeViewModel.logoutPerformed) {
+                    HomeView()
                 }
                 
-                Text("Review Scanner")
-                    .font(.largeTitle)
-                    .fontWeight(.semibold)
-                    .padding(.top, 50)
-                    .padding(.bottom, 10)
-                
-                if environmentData.userData.isLoggedIn {
-                    Text("Hello \(environmentData.userData.nickname)")
-                }
-                else {
-                    Text("Hello")
+                .onAppear() {
+                    print("Is user logged in: \(environmentData.userData.isLoggedIn)")
                 }
                 
-                Spacer()
-                
-                MenuButton(iconName: "barcode.viewfinder", description: "Scan", nextView: BarcodeScannerView())
-                
-                MenuButton(iconName: "clock", description: "History", nextView: HistoryView())
-
-                if environmentData.userData.isLoggedIn {
-                    MenuButton(iconName: "star.bubble", description: "My reviews", nextView: UserReviewsView(reviews: []))
+                .onChange(of: homeViewModel.fetchingScanHistoryDataPerformed) { _, fetched in
+                    if fetched {
+                        homeViewModel.fetchFullScanHistoryData(environmentData: environmentData, scanHistoryList: homeViewModel.scanHistoryData)
+                    }
                 }
-                else {
-                    MenuButton(iconName: "person.circle", description: "Log In", nextView: LoginView())
+                
+                .navigationDestination(isPresented: $homeViewModel.fetchingFullScanHistoryDataPerformed) {
+                    RecentlyViewedProductsView(fullScanHistoryList: homeViewModel.fullScanHistoryData)
+                }
+                
+                .navigationDestination(isPresented: $homeViewModel.error) {
+                    switch homeViewModel.errorData {
+                    case .networkingError:
+                        Text("Networking error")
+                    default:
+                        Text("Unknown error")
+                    }
+                    
+                }
+                
+                if homeViewModel.isLoading {
+                    CircleLoaderView()
                 }
                 
             }
-            .padding()
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Gradient(colors: gradientColors))
             
-            .navigationDestination(isPresented: $homeViewModel.logoutPerformed) {
-                HomeView()
-            }
-            .onAppear() {
-                print("Is user logged in: \(environmentData.userData.isLoggedIn)")
-            }
         }
     }
 }

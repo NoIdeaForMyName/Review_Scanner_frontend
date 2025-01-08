@@ -7,36 +7,33 @@
 
 import SwiftUI
 
-struct MenuButton<Destination: View>: View {
+struct MenuButton: View {
     let iconName: String
     let description: String
-    let nextView: Destination
     
     var body: some View {
-        NavigationLink(destination: nextView) {
-            HStack {
-                Spacer()
+        HStack {
+            Spacer()
+            
+            VStack(spacing: 10) {
+                Image(systemName: iconName)
+                    .font(.system(size: 90))
                 
-                VStack(spacing: 10) {
-                    Image(systemName: iconName)
-                        .font(.system(size: 90))
-                    
-                    Text(description)
-                    
-                }
-                .foregroundStyle(.black)
+                Text(description)
                 
-                Spacer()
             }
-            .padding()
-            .background(Color.button, in: RoundedRectangle(cornerRadius: 20))
+            .foregroundStyle(.black)
+            
+            Spacer()
         }
+        .padding()
+        .background(Color.button, in: RoundedRectangle(cornerRadius: 20))
     }
 }
 
 #Preview {
     NavigationView {
-        MenuButton(iconName: "barcode.viewfinder", description: "Scan", nextView: TestView())
+        MenuButton(iconName: "barcode.viewfinder", description: "Scan")
             .frame(maxHeight: .infinity)
             .background(Gradient(colors: gradientColors))
     }
