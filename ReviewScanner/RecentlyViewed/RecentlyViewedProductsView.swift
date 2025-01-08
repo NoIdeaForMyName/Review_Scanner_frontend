@@ -1,28 +1,57 @@
 import SwiftUI
 
 struct RecentlyViewedProductsView: View {
+    @EnvironmentObject var environmentData: EnvironmentData
+    @StateObject var recentlyViewedProductsViewModel: RecentlyViewedProductsViewModel = RecentlyViewedProductsViewModel()
+    
     let fullScanHistoryList: [FullScanHistoryEntry]
     
     var body: some View {
-        VStack() {
-            Text("Recently viewed products")
-            
-            ScrollView {
-                VStack(spacing: 20) {
-                    VStack {
-                        ForEach(0..<fullScanHistoryList.count, id: \.self) { index in
-                            Product(fullScanHistoryEntry: fullScanHistoryList[index])
-                        }
-                    }
-                    .shadow(radius: 5)
+        NavigationStack {
+            ZStack() {
+                VStack() {
+                    Text("Recently viewed products")
                     
-                    Spacer()
+                    ScrollView {
+                        VStack(spacing: 20) {
+                            VStack {
+                                ForEach(0..<fullScanHistoryList.count, id: \.self) { index in
+                                    Button(action: {
+                                        recentlyViewedProductsViewModel.fetchProductData(environmentData: environmentData, id: fullScanHistoryList[index].id)
+                                    }) {
+                                        Product(fullScanHistoryEntry: fullScanHistoryList[index])
+                                    }
+                                }
+                            }
+                            .shadow(radius: 5)
+                            
+                            Spacer()
+                        }
+                        .padding()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    }
                 }
-                .padding()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Gradient(colors: gradientColors))
+                
+                .navigationDestination(isPresented: $recentlyViewedProductsViewModel.success) {
+                    ProductPageView(productData: recentlyViewedProductsViewModel.productData ?? ProductData(id: -1, name: "test", description: "test", image: "", barcode: "123", average_grade: 5, grade_count: 1, reviews: []))
+                }
+                
+                .navigationDestination(isPresented: $recentlyViewedProductsViewModel.error) {
+                    switch recentlyViewedProductsViewModel.errorData {
+                    case .networkingError:
+                        Text("Networking error")
+                    default:
+                        Text("Unknown error")
+                    }
+                    
+                }
+                
+                if recentlyViewedProductsViewModel.isLoading {
+                    CircleLoaderView()
+                }
             }
         }
-        .background(Gradient(colors: gradientColors))
     }
 }
 

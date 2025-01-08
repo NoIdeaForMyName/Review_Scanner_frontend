@@ -20,7 +20,7 @@ protocol AuthServiceProtocol {
     func fetchScanHistory() -> AnyPublisher<[ScanHistoryEntry], APIError>
     func fetchMyReviews() -> AnyPublisher<[ReviewData], APIError>
     func addProduct(barcode: String, name: String, description: String, image: UIImage) -> AnyPublisher<Void, APIError>
-    func addReview(product_id: Int, title: String, description: String, grade: Int, images: [UIImage]) -> AnyPublisher<Void, APIError>
+    func addReview(product_id: Int, title: String, description: String, grade: Int, price: Double, shopName: String, images: [UIImage]) -> AnyPublisher<Void, APIError>
 }
 
 class API_AuthService: AuthServiceProtocol {
@@ -110,7 +110,7 @@ class API_AuthService: AuthServiceProtocol {
         return APIResponse.fetchStatusVoid(for: request)
     }
     
-    func addReview(product_id: Int, title: String, description: String, grade: Int, images: [UIImage]) -> AnyPublisher<Void, APIError> {
+    func addReview(product_id: Int, title: String, description: String, grade: Int, price: Double, shopName: String, images: [UIImage]) -> AnyPublisher<Void, APIError> {
         let url = baseURL.appendingPathComponent("add-review")
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -123,6 +123,8 @@ class API_AuthService: AuthServiceProtocol {
             "title": title,
             "description": description,
             "grade": grade,
+            "price": price,
+            "shop_name": shopName,
             "images_base64": images.map {img in imageToBase64(img)!}
         ]
         request.httpBody = try? JSONSerialization.data(withJSONObject: body)
@@ -388,7 +390,7 @@ class API_AuthServiceMock: AuthServiceProtocol {
             .eraseToAnyPublisher()
     }
     
-    func addReview(product_id: Int, title: String, description: String, grade: Int, images: [UIImage]) -> AnyPublisher<Void, APIError> {
+    func addReview(product_id: Int, title: String, description: String, grade: Int, price: Double, shopName: String, images: [UIImage]) -> AnyPublisher<Void, APIError> {
         guard isLoggedIn else { return Fail(error: APIError.unauthorized("Not logged in")).eraseToAnyPublisher() }
         if !title.isEmpty && !description.isEmpty && (1...5).contains(grade) {
             return Just(())
