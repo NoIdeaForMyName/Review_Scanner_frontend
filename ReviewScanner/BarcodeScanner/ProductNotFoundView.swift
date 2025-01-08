@@ -8,13 +8,16 @@
 import SwiftUI
 
 struct ProductNotFoundView: View {
+    @EnvironmentObject var environmentData: EnvironmentData
+    
+    var barcode: String
     var body: some View {
         
         NavigationStack {
             VStack {
                 Spacer()
                 
-                Text("This product is currently not in our database. Do you want to add it?")
+                Text("This product is currently not in our database.")
                     .font(.title)
                     .bold()
                     .padding(30)
@@ -22,8 +25,9 @@ struct ProductNotFoundView: View {
                 
                 Spacer()
                 
-                // TODO: pass actual barcode
-                SmallButton(text: "Add product", destination: AddProductView(barcode: "1234567891011"))
+                if environmentData.userData.isLoggedIn {
+                    SmallButton(text: "Add product", destination: AddProductView(barcode: barcode))
+                }
                 
                 SmallButton(text: "Cancel", destination: HomeView())
                     
@@ -37,5 +41,5 @@ struct ProductNotFoundView: View {
 }
 
 #Preview {
-    ProductNotFoundView()
+    ProductNotFoundView(barcode: "1234567891011")
 }

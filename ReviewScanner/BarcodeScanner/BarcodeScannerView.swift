@@ -70,7 +70,7 @@ struct BarcodeScannerView: View {
                 .navigationDestination(isPresented: $barcodeScannerViewModel.error) {
                     switch barcodeScannerViewModel.errorData {
                     case .notFound:
-                        ProductNotFoundView()
+                        ProductNotFoundView(barcode: barcode)
                     default:
                         if let error = barcodeScannerViewModel.errorData {
                             Text(error.localizedDescription)
