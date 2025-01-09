@@ -5,59 +5,73 @@ struct UserReviewsView: View {
     @StateObject var userReviewsModel: UserReviewsViewModel = UserReviewsViewModel()
     
     var body: some View {
-        ZStack{
-            VStack() {
-                Text("My reviews")
-                
-                ScrollView {
-                    VStack(spacing: 20) {
-                        if userReviewsModel.success {
-                            VStack {
-                                ForEach(userReviewsModel.reviewData, id: \.id) { reviewData in
-                                    UserReview(
-                                        reviewTitle: reviewData.title,
-                                        reviewBody: reviewData.description,
-                                        productName: reviewData.product_name,
-                                        shop: reviewData.shop.name,
-                                        price: reviewData.price,
-                                        rating: Int(reviewData.grade),
-                                        mediaURLs: reviewData.media.map { $0.url }
-                                    )
+        NavigationStack {
+            ZStack{
+                VStack() {
+                    Text("My reviews")
+                    
+                    ScrollView {
+                        VStack(spacing: 20) {
+                            if let error = userReviewsModel.errorData {
+                                switch error {
+                                case .notFound:
+                                    Text("User didn't write any review yet.")
+                                        .font(.title)
+                                        .bold()
+                                        .padding(30)
+                                        .multilineTextAlignment(.center)
+                                default:
+                                    Text(error.localizedDescription)
+                                        .foregroundColor(.red)
+                                        .font(.footnote)
                                 }
+                            } else {
+                                VStack {
+                                    ForEach(userReviewsModel.reviewData, id: \.id) { reviewData in
+                                        Button(action: {
+                                            userReviewsModel.fetchProductData(environmentData: environmentData, id: reviewData.product_id)
+                                        }) {
+                                            UserReview(
+                                                reviewTitle: reviewData.title,
+                                                reviewBody: reviewData.description,
+                                                productName: reviewData.product_name,
+                                                shop: reviewData.shop.name,
+                                                price: reviewData.price,
+                                                rating: Int(reviewData.grade),
+                                                mediaURLs: reviewData.media.map { $0.url }
+                                            )
+                                            .background(Color.white)
+                                            .contentShape(Rectangle())
+                                        }
+                                        .buttonStyle(.plain)
+                                    }
+                                }
+                                .padding()
+                                .background(Color(.systemBackground))
+                                .cornerRadius(20)
+                                .shadow(radius: 5)
                             }
-                            .padding()
-                            .background(Color(.systemBackground))
-                            .cornerRadius(20)
-                            .shadow(radius: 5)
-                        } else if let error = userReviewsModel.errorData {
-                            switch error {
-                            case .notFound:
-                                Text("User didn't write any review yet.")
-                                    .font(.title)
-                                    .bold()
-                                    .padding(30)
-                                    .multilineTextAlignment(.center)
-                            default:
-                                Text(error.localizedDescription)
-                                    .foregroundColor(.red)
-                                    .font(.footnote)
-                            }
+                            
+                            Spacer()
                         }
-                        
-                        Spacer()
+                        .padding()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
-                    .padding()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+                .background(Gradient(colors: gradientColors))
+                
+                if userReviewsModel.isLoading {
+                    CircleLoaderView()
                 }
             }
-            .background(Gradient(colors: gradientColors))
-            
-            if userReviewsModel.isLoading {
-                CircleLoaderView()
+            .navigationDestination(isPresented: $userReviewsModel.successProd) {
+                if let productD = userReviewsModel.productData {
+                    ProductPageView(productData: productD)
+                }
             }
-        }
-        .onAppear {
-            userReviewsModel.actualiseReviews(environmentData: environmentData)
+            .onAppear {
+                userReviewsModel.actualiseReviews(environmentData: environmentData)
+            }
         }
     }
 }
