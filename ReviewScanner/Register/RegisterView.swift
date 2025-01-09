@@ -98,7 +98,7 @@ struct RegisterView: View {
             
             .onChange(of: registerViewModel.isLoggedIn) { _, loggedIn in
                 if loggedIn {
-                    registerViewModel.uploadLocalScanHistory(environmentData: environmentData)
+                    registerViewModel.uploadLocalScanHistoryList(environmentData: environmentData)
                 }
             }
             

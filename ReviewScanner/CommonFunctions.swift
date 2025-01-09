@@ -15,3 +15,9 @@ func getLocalScanHistory() -> [ScanHistoryEntry] {
         return []
     }
 }
+
+func getCurrentDateString() -> String {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "dd.MM.yyyy"
+    return dateFormatter.string(from: Date.now) //dateFormatter.string(from: Date.()))
+}
