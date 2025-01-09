@@ -61,7 +61,7 @@ class RegisterViewModel: ObservableObject {
         }
     }
     
-    public func uploadLocalScanHistory(environmentData: EnvironmentData) {
+    public func uploadLocalScanHistoryList(environmentData: EnvironmentData) {
         
         let localScanHistory = getLocalScanHistory()
         

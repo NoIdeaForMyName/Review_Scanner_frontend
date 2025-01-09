@@ -16,102 +16,115 @@ struct ProductPageView: View {
     
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 20) {
-                    AsyncImage(url: URL(string: productData.image)) { phase in
-                        switch phase {
-                        case .empty:
-                            ProgressView()
-                        case .success(let image):
-                            image
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 250, height: 250)
-                                .clipped()
-                                .cornerRadius(30)
-                        case .failure:
-                            Image(systemName: "xmark.octagon")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 250, height: 250)
-                                .foregroundColor(.red)
-                        @unknown default:
-                            EmptyView()
+            ZStack {
+                ScrollView {
+                    VStack(spacing: 20) {
+                        AsyncImage(url: URL(string: productData.image)) { phase in
+                            switch phase {
+                            case .empty:
+                                ProgressView()
+                            case .success(let image):
+                                image
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 250, height: 250)
+                                    .clipped()
+                                    .cornerRadius(30)
+                            case .failure:
+                                Image(systemName: "xmark.octagon")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 250, height: 250)
+                                    .foregroundColor(.red)
+                            @unknown default:
+                                EmptyView()
+                            }
                         }
-                    }
-                    
-                    HStack() {
-                        Image(systemName: "star")
                         
-                        Text(String(format: "%.1f", productData.average_grade))
-                        
-                        Text(productData.name)
-                            .font(.headline)
-                    }
-                    
-                    VStack(alignment: .leading) {
-                        Text(productData.description)
-                            .lineLimit(isDescriptionExpanded ? nil : 5)
-                            .animation(.easeInOut, value: isDescriptionExpanded)
-                        
-                        Button(action: {
-                            isDescriptionExpanded.toggle()
-                        }) {
-                            Text(isDescriptionExpanded ? "Show Less" : "Show More")
-                                .font(.caption)
-                                .foregroundColor(.blue)
-                        }
-                    }
-                    
-                    if environmentData.userData.isLoggedIn {
-                        NavigationLink(destination: AddReviewView(productId: productData.id, productName: productData.name)) {
-                            Text("Add review")
+                        HStack() {
+                            Image(systemName: "star")
+                            
+                            Text(String(format: "%.1f", productData.average_grade))
+                            
+                            Text(productData.name)
                                 .font(.headline)
-                                .padding()
-                                .background(Color.button)
-                                .foregroundColor(.black)
-                                .cornerRadius(8)
                         }
-                    }
-                    
-                    VStack {
-                        ForEach(productData.reviews, id: \.id) { reviewData in
-                            ProductReview(
-                                reviewTitle: reviewData.title,
-                                reviewBody: reviewData.description,
-                                nickname: reviewData.user.nickname,
-                                shop: reviewData.shop.name,
-                                price: reviewData.price,
-                                rating: Int(reviewData.grade),
-                                mediaURLs: reviewData.media.map { $0.url }
-                            )
+                        
+                        VStack(alignment: .leading) {
+                            Text(productData.description)
+                                .lineLimit(isDescriptionExpanded ? nil : 5)
+                                .animation(.easeInOut, value: isDescriptionExpanded)
+                            
+                            Button(action: {
+                                isDescriptionExpanded.toggle()
+                            }) {
+                                Text(isDescriptionExpanded ? "Show Less" : "Show More")
+                                    .font(.caption)
+                                    .foregroundColor(.blue)
+                            }
                         }
+                        
+                        if environmentData.userData.isLoggedIn {
+                            NavigationLink(destination: AddReviewView(productId: productData.id, productName: productData.name)) {
+                                Text("Add review")
+                                    .font(.headline)
+                                    .padding()
+                                    .background(Color.button)
+                                    .foregroundColor(.black)
+                                    .cornerRadius(8)
+                            }
+                        }
+                        
+                        VStack {
+                            ForEach(productData.reviews, id: \.id) { reviewData in
+                                ProductReview(
+                                    reviewTitle: reviewData.title,
+                                    reviewBody: reviewData.description,
+                                    nickname: reviewData.user.nickname,
+                                    shop: reviewData.shop.name,
+                                    price: reviewData.price,
+                                    rating: Int(reviewData.grade),
+                                    mediaURLs: reviewData.media.map { $0.url }
+                                )
+                            }
+                        }
+                        .padding()
+                        .background(Color(.systemBackground))
+                        .cornerRadius(20)
+                        .shadow(radius: 5)
+                        
+                        Spacer()
                     }
                     .padding()
-                    .background(Color(.systemBackground))
-                    .cornerRadius(20)
-                    .shadow(radius: 5)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+                .background(Gradient(colors: gradientColors))
+                
+                .onAppear() {
+                    if productData.id == -1 {
+                        return
+                    }
                     
-                    Spacer()
+                    else if environmentData.userData.isLoggedIn {
+                        productPageViewModel.uploadScanHistory(environmentData: environmentData, productData: productData)
+                    }
+                    
+                    else {
+                        productPageViewModel.addLocalScanHistoryEntry(productData: productData)
+                    }
                 }
-                .padding()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-            }
-            .background(Gradient(colors: gradientColors))
-            
-            .onAppear() {
-                if productData.id == -1 {
-                    return
-                }
-                
-                else if environmentData.userData.isLoggedIn {
-                    // TODO implementacja dodania historii skanów na serwer
-                }
-                
-                else {
-                    productPageViewModel.addLocalScanHistoryEntry(productData: productData)
+                if productPageViewModel.isLoading {
+                    CircleLoaderView()
                 }
             }
+            .navigationDestination(isPresented: $productPageViewModel.error) {
+                if let error = productPageViewModel.errorData {
+                    Text(error.localizedDescription)
+                        .foregroundColor(.red)
+                        .font(.footnote)
+                }
+            }
+                
         }
     }
 }
