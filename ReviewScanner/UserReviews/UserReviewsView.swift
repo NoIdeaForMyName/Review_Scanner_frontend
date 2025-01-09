@@ -30,9 +30,18 @@ struct UserReviewsView: View {
                             .cornerRadius(20)
                             .shadow(radius: 5)
                         } else if let error = userReviewsModel.errorData {
-                            Text(error.localizedDescription)
-                                .foregroundColor(.red)
-                                .font(.footnote)
+                            switch error {
+                            case .notFound:
+                                Text("User didn't write any review yet.")
+                                    .font(.title)
+                                    .bold()
+                                    .padding(30)
+                                    .multilineTextAlignment(.center)
+                            default:
+                                Text(error.localizedDescription)
+                                    .foregroundColor(.red)
+                                    .font(.footnote)
+                            }
                         }
                         
                         Spacer()
