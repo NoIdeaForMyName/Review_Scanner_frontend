@@ -33,10 +33,15 @@ struct Product: View {
                 }
                 
                 VStack(spacing: 10) {
-                    Text(Image(systemName: "star"))
-                    + Text(" \(String(round(fullScanHistoryEntry.average_grade*10)/10)) ")
-                    + Text(fullScanHistoryEntry.name)
-                        .font(.headline)
+                    if fullScanHistoryEntry.average_grade > 0.0 {
+                        Text(Image(systemName: "star"))
+                        + Text(" \(String(round(fullScanHistoryEntry.average_grade*10)/10)) ")
+                        + Text(fullScanHistoryEntry.name)
+                            .font(.headline)
+                    } else {
+                        Text(fullScanHistoryEntry.name)
+                            .font(.headline)
+                    }
                     
                     Text(fullScanHistoryEntry.description)
                         .font(.footnote)
