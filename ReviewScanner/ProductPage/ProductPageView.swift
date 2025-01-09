@@ -11,7 +11,6 @@ struct ProductPageView: View {
     let productData: ProductData
     
     @StateObject var productPageViewModel: ProductPageModelView = ProductPageModelView()
-    
     @State private var isDescriptionExpanded: Bool = false
     
     var body: some View {
@@ -41,27 +40,46 @@ struct ProductPageView: View {
                     }
                     
                     HStack() {
-                        Image(systemName: "star")
-                        
-                        Text(String(format: "%.1f", productData.average_grade))
+                        if productData.grade_count > 0 {
+                            Image(systemName: "star")
+                            
+                            Text(String(format: "%.1f (%d)", productData.average_grade, productData.grade_count))
+                        }
                         
                         Text(productData.name)
                             .font(.headline)
                     }
                     
-                    VStack(alignment: .leading) {
+//                    VStack(alignment: .leading) {
+//                        Text(productData.description)
+//                            .lineLimit(isDescriptionExpanded ? nil : 5)
+//                            .animation(.easeInOut, value: isDescriptionExpanded)
+//                        
+//                        Button(action: {
+//                            isDescriptionExpanded.toggle()
+//                        }) {
+//                            Text(isDescriptionExpanded ? "Show Less" : "Show More")
+//                                .font(.caption)
+//                                .foregroundColor(.blue)
+//                        }
+//                    }
+                    VStack(alignment: .center) {
                         Text(productData.description)
                             .lineLimit(isDescriptionExpanded ? nil : 5)
+                            .frame(maxWidth: .infinity, alignment: .center)
                             .animation(.easeInOut, value: isDescriptionExpanded)
                         
-                        Button(action: {
-                            isDescriptionExpanded.toggle()
-                        }) {
-                            Text(isDescriptionExpanded ? "Show Less" : "Show More")
-                                .font(.caption)
-                                .foregroundColor(.blue)
+                        if productData.description.count > 100 { // Simplified check
+                            Button(action: {
+                                isDescriptionExpanded.toggle()
+                            }) {
+                                Text(isDescriptionExpanded ? "Show Less" : "Show More")
+                                    .font(.caption)
+                                    .foregroundColor(.blue)
+                            }
                         }
                     }
+                    .frame(maxWidth: .infinity)
                     
                     if environmentData.userData.isLoggedIn {
                         NavigationLink(destination: AddReviewView(productId: productData.id, productName: productData.name)) {
