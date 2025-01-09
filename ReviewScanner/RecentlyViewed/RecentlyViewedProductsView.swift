@@ -14,16 +14,25 @@ struct RecentlyViewedProductsView: View {
                     
                     ScrollView {
                         VStack(spacing: 20) {
-                            VStack {
-                                ForEach(0..<fullScanHistoryList.count, id: \.self) { index in
-                                    Button(action: {
-                                        recentlyViewedProductsViewModel.fetchProductData(environmentData: environmentData, id: fullScanHistoryList[index].id)
-                                    }) {
-                                        Product(fullScanHistoryEntry: fullScanHistoryList[index])
+                            if fullScanHistoryList.isEmpty {
+                                Text("User didn't scan any product yet.")
+                                    .font(.title)
+                                    .bold()
+                                    .padding(30)
+                                    .multilineTextAlignment(.center)
+                            }
+                            else {
+                                VStack {
+                                    ForEach(0..<fullScanHistoryList.count, id: \.self) { index in
+                                        Button(action: {
+                                            recentlyViewedProductsViewModel.fetchProductData(environmentData: environmentData, id: fullScanHistoryList[index].id)
+                                        }) {
+                                            Product(fullScanHistoryEntry: fullScanHistoryList[index])
+                                        }
                                     }
                                 }
+                                .shadow(radius: 5)
                             }
-                            .shadow(radius: 5)
                             
                             Spacer()
                         }

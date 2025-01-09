@@ -93,23 +93,32 @@ struct ProductPageView: View {
                             }
                         }
                         
-                        VStack {
-                            ForEach(productData.reviews, id: \.id) { reviewData in
-                                ProductReview(
-                                    reviewTitle: reviewData.title,
-                                    reviewBody: reviewData.description,
-                                    nickname: reviewData.user.nickname,
-                                    shop: reviewData.shop.name,
-                                    price: reviewData.price,
-                                    rating: Int(reviewData.grade),
-                                    mediaURLs: reviewData.media.map { $0.url }
-                                )
-                            }
+                        if productData.reviews.isEmpty {
+                            Text("This product has no reviews yet.")
+                                .font(.title)
+                                .bold()
+                                .padding(30)
+                                .multilineTextAlignment(.center)
                         }
-                        .padding()
-                        .background(Color(.systemBackground))
-                        .cornerRadius(20)
-                        .shadow(radius: 5)
+                        else {
+                            VStack {
+                                ForEach(productData.reviews, id: \.id) { reviewData in
+                                    ProductReview(
+                                        reviewTitle: reviewData.title,
+                                        reviewBody: reviewData.description,
+                                        nickname: reviewData.user.nickname,
+                                        shop: reviewData.shop.name,
+                                        price: reviewData.price,
+                                        rating: Int(reviewData.grade),
+                                        mediaURLs: reviewData.media.map { $0.url }
+                                    )
+                                }
+                            }
+                            .padding()
+                            .background(Color(.systemBackground))
+                            .cornerRadius(20)
+                            .shadow(radius: 5)
+                        }
                         
                         Spacer()
                     }
