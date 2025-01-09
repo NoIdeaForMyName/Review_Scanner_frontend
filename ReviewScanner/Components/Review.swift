@@ -10,10 +10,12 @@ struct Review: View {
     let rating: Int
     let mediaURLs: [String]
     
+    @State private var selectedImage: IdentifiableString? = nil
+    
     var body: some View {
         VStack {
             VStack(alignment: .leading) {
-                HStack() {
+                HStack {
                     Text("\(upperLeftLabel): \(upperLeftValue)")
                         .font(.subheadline)
                     
@@ -23,7 +25,7 @@ struct Review: View {
                         .font(.subheadline)
                 }.padding(.bottom, 10)
                 
-                HStack() {
+                HStack {
                     Text("Shop name: \(shop)")
                         .font(.subheadline)
                     
@@ -35,7 +37,7 @@ struct Review: View {
                     }
                 }.padding(.bottom, 10)
                 
-                HStack() {
+                HStack {
                     ForEach(mediaURLs, id: \.self) { mediaURL in
                         AsyncImage(url: URL(string: mediaURL)) { phase in
                             switch phase {
@@ -48,6 +50,9 @@ struct Review: View {
                                         .frame(width: 50, height: 50)
                                         .clipped()
                                         .cornerRadius(10)
+                                        .onTapGesture {
+                                            selectedImage = IdentifiableString(id: mediaURL)
+                                        }
                                 case .failure:
                                     Image(systemName: "xmark.octagon")
                                         .resizable()
@@ -56,7 +61,7 @@ struct Review: View {
                                         .foregroundColor(.red)
                                 @unknown default:
                                     EmptyView()
-                                }
+                            }
                         }
                     }
                 }
@@ -65,7 +70,7 @@ struct Review: View {
             .padding(.trailing, 10)
             .padding(.top, 10)
             
-            VStack() {
+            VStack {
                 Text(reviewTitle)
                     .font(.title)
                     .padding(.leading, 10)
@@ -83,7 +88,43 @@ struct Review: View {
             RoundedRectangle(cornerRadius: 15)
                 .stroke(Color.gray, lineWidth: 1)
         )
+        .sheet(item: $selectedImage) { identifiableString in
+            ImagePreviewView(imageURL: identifiableString.id)
+        }
     }
+}
+
+struct ImagePreviewView: View {
+    let imageURL: String
+
+    var body: some View {
+        VStack {
+            AsyncImage(url: URL(string: imageURL)) { phase in
+                switch phase {
+                    case .empty:
+                        ProgressView()
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .scaledToFit()
+                    case .failure:
+                        Image(systemName: "xmark.octagon")
+                            .resizable()
+                            .scaledToFit()
+                            .foregroundColor(.red)
+                    @unknown default:
+                        EmptyView()
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color.black.opacity(0.8))
+            .edgesIgnoringSafeArea(.all)
+        }
+    }
+}
+
+struct IdentifiableString: Identifiable {
+    let id: String
 }
 
 #Preview {
