@@ -39,6 +39,8 @@ struct AddReviewView: View {
     
     @State private var photosPickerItems: [PhotosPickerItem] = []
     
+    @FocusState private var isFocused: Bool
+    
     var body: some View {
         NavigationStack {
             
@@ -75,6 +77,7 @@ struct AddReviewView: View {
                                     Text("Title")
                                         .frame(width: 85, alignment: .leading)
                                     TextField("Main thought", text: $reviewTitle)
+                                        .focused($isFocused)
                                         .padding()
                                         .background(Color(.secondarySystemBackground))
                                         .cornerRadius(8)
@@ -84,6 +87,7 @@ struct AddReviewView: View {
                                     Text("Price")
                                         .frame(width: 85, alignment: .leading)
                                     DecimalTextField(value: $price, placeholder: "")
+                                        .focused($isFocused)
                                         .padding()
                                         .background(Color(.secondarySystemBackground))
                                         .cornerRadius(8)
@@ -93,6 +97,7 @@ struct AddReviewView: View {
                                     Text("Shop")
                                         .frame(width: 85, alignment: .leading)
                                     TextField("Shop name", text: $shopName)
+                                        .focused($isFocused)
                                         .padding()
                                         .background(Color(.secondarySystemBackground))
                                         .cornerRadius(8)
@@ -101,6 +106,7 @@ struct AddReviewView: View {
                                 Text("Description")
                                 
                                 TextEditor(text: $reviewBody)
+                                    .focused($isFocused)
                                     .padding(8)
                                     .background(Color(.secondarySystemBackground))
                                     .cornerRadius(8)
@@ -188,6 +194,13 @@ struct AddReviewView: View {
             }
             .navigationDestination(isPresented: $addReviewViewModel.addingReviewFinished) {
                 InfoView(info: "Review added", nextView: HomeView())
+            }
+            .toolbar {
+                ToolbarItem(placement: .keyboard) {
+                    Button("Done") {
+                        isFocused = false
+                    }
+                }
             }
         }
     }
