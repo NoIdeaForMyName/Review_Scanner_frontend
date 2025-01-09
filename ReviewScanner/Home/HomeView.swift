@@ -5,6 +5,8 @@ struct HomeView: View {
     
     @StateObject var homeViewModel: HomeViewModel = HomeViewModel()
     
+    @State private var isVideoPresented = false
+    
     var body: some View {
         NavigationStack {
             
@@ -12,9 +14,18 @@ struct HomeView: View {
                 
                 VStack {
                     
-                    if environmentData.userData.isLoggedIn {
-                        HStack {
-                            Spacer()
+                    HStack {
+                        Button(action: {
+                            isVideoPresented = true
+                        }) {
+                            Image(systemName: "questionmark.circle")
+                                .font(.system(size: 40))
+                                .foregroundStyle(Color.black)
+                        }
+                        
+                        Spacer()
+                        
+                        if environmentData.userData.isLoggedIn {
                             Button(action: {
                                 homeViewModel.logoutAction(environmentData: environmentData)
                             }){
@@ -112,6 +123,9 @@ struct HomeView: View {
             }
         }
         .navigationBarBackButtonHidden(true)
+        .fullScreenCover(isPresented: $isVideoPresented) {
+            VideoPlayerView(isPresented: $isVideoPresented)
+        }
     }
 }
 
