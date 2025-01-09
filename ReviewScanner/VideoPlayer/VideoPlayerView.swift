@@ -1,8 +1,8 @@
 import SwiftUI
 import AVKit
 
-let VIDEO_FILE_NAME = "" // TO BE ADDED
-let VIDEO_FILE_EXTENSION = "" // TO BE ADDED
+let VIDEO_FILE_NAME = "review-scanner-demo"
+let VIDEO_FILE_EXTENSION = "mov"
 
 struct VideoPlayerView: View {
     @Binding var isPresented: Bool
