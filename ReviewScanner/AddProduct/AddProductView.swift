@@ -40,7 +40,7 @@ struct AddProductView: View {
                                 .padding(8)
                                 .background(Color(.secondarySystemBackground))
                                 .cornerRadius(8)
-                                .frame(maxHeight: 200)
+                                .frame(minHeight: 200, maxHeight: 200)
                             
                             Text("Main photo")
                             
