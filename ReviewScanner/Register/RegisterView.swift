@@ -95,7 +95,14 @@ struct RegisterView: View {
                     CircleLoaderView()
                 }
             }
-            .navigationDestination(isPresented: $registerViewModel.isLoggedIn) {
+            
+            .onChange(of: registerViewModel.isLoggedIn) { _, loggedIn in
+                if loggedIn {
+                    registerViewModel.uploadLocalScanHistory(environmentData: environmentData)
+                }
+            }
+            
+            .navigationDestination(isPresented: $registerViewModel.localScanHistoryUploaded) {
                 HomeView()
             }
         }

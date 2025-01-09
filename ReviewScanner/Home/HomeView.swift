@@ -49,12 +49,14 @@ struct HomeView: View {
                             homeViewModel.fetchScanHistoryData(environmentData: environmentData)
                         }
                         else {
-                            if let data = UserDefaults.standard.data(forKey: "scan-history"),
-                               let scanHistory = try? JSONDecoder().decode([ScanHistoryEntry].self, from: data) {
-                                homeViewModel.fetchFullScanHistoryData(environmentData: environmentData, scanHistoryList: scanHistory)
-                            } else {
-                                homeViewModel.fetchingFullScanHistoryDataPerformed = true
-                            }
+                            let scanHistory = getLocalScanHistory()
+//                            if let data = UserDefaults.standard.data(forKey: "scan-history"),
+//                               let scanHistory = try? JSONDecoder().decode([ScanHistoryEntry].self, from: data) {
+//                                homeViewModel.fetchFullScanHistoryData(environmentData: environmentData, scanHistoryList: scanHistory)
+//                            } else {
+//                                homeViewModel.fetchingFullScanHistoryDataPerformed = true
+//                            }
+                            homeViewModel.fetchFullScanHistoryData(environmentData: environmentData, scanHistoryList: scanHistory)
                         }
                     }) {
                         MenuButton(iconName: "clock", description: "History")

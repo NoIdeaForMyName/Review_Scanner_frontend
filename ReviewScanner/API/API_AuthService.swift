@@ -63,7 +63,7 @@ class API_AuthService: AuthServiceProtocol {
     }
     
     func addToHistory(entries: [ScanHistoryEntry]) -> AnyPublisher<Void, APIError> {
-        let url = baseURL.appendingPathComponent("add-to-history")
+        let url = baseURL.appendingPathComponent("add-list-to-history")
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         

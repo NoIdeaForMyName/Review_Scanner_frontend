@@ -15,8 +15,10 @@ class RegisterViewModel: ObservableObject {
     @Published public var isLoggedIn: Bool = false
     @Published public var errorMessage: String? // Do przechowywania błędów logowania
     @Published public var isLoading: Bool = false
+    @Published public var localScanHistoryUploaded: Bool = false
 
     private var registerCancellable: AnyCancellable? // Do przechowywania subskrypcji
+    private var scanHistoryUploadingCancellable: AnyCancellable? // Do przechowywania subskrypcji
 
     public func registerAction(environmentData: EnvironmentData) {
         var isOk = false
@@ -57,6 +59,32 @@ class RegisterViewModel: ObservableObject {
                 })
                 
         }
+    }
+    
+    public func uploadLocalScanHistory(environmentData: EnvironmentData) {
+        
+        let localScanHistory = getLocalScanHistory()
+        
+        if localScanHistory.isEmpty {
+            localScanHistoryUploaded = true
+            return
+        }
+        
+        errorMessage = nil // Wyczyść poprzedni błąd
+        isLoading = true
+
+        scanHistoryUploadingCancellable = environmentData.authService.addToHistory(entries: localScanHistory)
+            .receive(on: DispatchQueue.main) // Zapewnij, że aktualizacje UI będą na głównym wątku
+            .sink(receiveCompletion: { [weak self] completion in
+                switch completion {
+                case .finished:
+                    print("Local scan history uploaded succesfully")
+                    self?.localScanHistoryUploaded = true
+                case .failure(let error):
+                    self?.errorMessage = error.localizedDescription
+                }
+                self?.isLoading = false
+            }, receiveValue: {})
     }
     
 }
