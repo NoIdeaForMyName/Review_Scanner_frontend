@@ -10,9 +10,13 @@ import Foundation
 @testable import ReviewScanner
 
 
-struct API_Tests {
+@Suite(.serialized) struct API_Tests {
     
     var environmentData: EnvironmentData = .init()
+    
+    private func setUp() {
+        // set up code
+    }
 
     @Test("Check fetching product data", arguments: [
         ("5909990642571",
@@ -43,6 +47,7 @@ struct API_Tests {
          Optional<APIError>(APIError.notFound("Product not found")))
     ])
     func fetchingProductData(testData: (String, ProductData?, APIError?)) async throws {
+        setUp()
         let modelView: BarcodeScannerModelView = BarcodeScannerModelView()
         
         let barcode = testData.0
@@ -51,7 +56,6 @@ struct API_Tests {
         
         modelView.fetchProductData(environmentData: environmentData, barcode: barcode)
         while modelView.isLoading {} // wait for the data to be fetched
-        try? await Task.sleep(nanoseconds: 1000000)
         if let testProductDataUnpacked = testProductData {
             try #require(modelView.success)
             #expect(modelView.productData! == testProductDataUnpacked)
@@ -69,6 +73,7 @@ struct API_Tests {
         (false, "wrong_email", "password", "nickname") // wrong
     ])
     func loggingIn(testData: (Bool, String, String, String)) async throws {
+        setUp()
         let modelView: LoginViewModel = LoginViewModel()
         
         let goodCredentials = testData.0
@@ -80,7 +85,6 @@ struct API_Tests {
         modelView.password = testPassword
         modelView.loginAction(environmentData: environmentData)
         while modelView.isLoading {}
-        try? await Task.sleep(nanoseconds: 1000000)
         
         if goodCredentials {
             try #require(modelView.isLoggedIn)
@@ -100,6 +104,7 @@ struct API_Tests {
         (false, "wrong_email", "password", "nickname") // wrong
     ])
     func loggingOut(testData: (Bool, String, String, String)) async throws {
+        setUp()
         let loginModelView: LoginViewModel = LoginViewModel()
         let logoutModelView: HomeViewModel = HomeViewModel()
         
@@ -111,12 +116,10 @@ struct API_Tests {
         loginModelView.password = testPassword
         loginModelView.loginAction(environmentData: environmentData)
         while loginModelView.isLoading {}
-        try? await Task.sleep(nanoseconds: 1000000)
         
         try #require(loginModelView.isLoggedIn == goodCredentials)
         logoutModelView.logoutAction(environmentData: environmentData)
         while (logoutModelView.isLoading) {}
-        try? await Task.sleep(nanoseconds: 1000000)
         
         if goodCredentials {
             try #require(logoutModelView.logoutPerformed)
@@ -139,6 +142,7 @@ struct API_Tests {
         [])
     ])
     func fetchingScanHistory(testData: (Bool, [ScanHistoryEntry])) async throws {
+        setUp()
         let loginModelView: LoginViewModel = LoginViewModel()
         let fetchScanHistoryViewModel: HomeViewModel = HomeViewModel()
         
@@ -151,13 +155,11 @@ struct API_Tests {
             loginModelView.password = "example_password"
             loginModelView.loginAction(environmentData: environmentData)
             while (loginModelView.isLoading) {}
-            try? await Task.sleep(nanoseconds: 1000000)
             try #require(loginModelView.isLoggedIn)
         }
         
         fetchScanHistoryViewModel.fetchScanHistoryData(environmentData: environmentData)
         while (fetchScanHistoryViewModel.isLoading) {}
-        try? await Task.sleep(nanoseconds: 1000000)
         
         if (authorizedUser) {
             try #require(fetchScanHistoryViewModel.fetchingScanHistoryDataPerformed)
@@ -186,6 +188,7 @@ struct API_Tests {
         [])
     ])
     func fetchingFullScanHistory(testData: ([ScanHistoryEntry], [FullScanHistoryEntry])) async throws {
+        setUp()
         let fetchFullScanHistoryViewModel: HomeViewModel = HomeViewModel()
         
         let testScanHistory = testData.0
@@ -193,7 +196,6 @@ struct API_Tests {
         
         fetchFullScanHistoryViewModel.fetchFullScanHistoryData(environmentData: environmentData, scanHistoryList: testScanHistory)
         while (fetchFullScanHistoryViewModel.isLoading) {}
-        try? await Task.sleep(nanoseconds: 1000000)
         
         try #require(fetchFullScanHistoryViewModel.fetchingFullScanHistoryDataPerformed)
         #expect(testFullScanHistory == fetchFullScanHistoryViewModel.fullScanHistoryData)
@@ -230,6 +232,7 @@ struct API_Tests {
         )
     ])
     func fetchingUserReviews(testData: (Bool, String, String, [ReviewData])) async throws {
+        setUp()
         let loginViewModel: LoginViewModel = LoginViewModel()
         let fetchUserReviewsViewModel: UserReviewsViewModel = UserReviewsViewModel()
         
@@ -243,13 +246,11 @@ struct API_Tests {
             loginViewModel.password = password
             loginViewModel.loginAction(environmentData: environmentData)
             while (loginViewModel.isLoading) {}
-            try? await Task.sleep(nanoseconds: 1000000)
             try #require(loginViewModel.isLoggedIn)
         }
         
         fetchUserReviewsViewModel.actualiseReviews(environmentData: environmentData)
         while (fetchUserReviewsViewModel.isLoading) {}
-        try? await Task.sleep(nanoseconds: 1000000)
         
         if goodCredentials {
             try #require(fetchUserReviewsViewModel.success)
