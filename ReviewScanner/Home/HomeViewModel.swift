@@ -103,21 +103,65 @@ class HomeViewModel: ObservableObject {
         isLoading = false
     }
     
-    private func mergeIntoFullScanHistoryList(scanHistoryList: [ScanHistoryEntry], productDataList: [ProductData]) -> [FullScanHistoryEntry] {
+    public func mergeIntoFullScanHistoryList(scanHistoryList: [ScanHistoryEntry], productDataList: [ProductData]) -> [FullScanHistoryEntry] {
         let sortedScanHistoryList = scanHistoryList.sorted() { $0.id < $1.id }
         let sortedProductDataList = productDataList.sorted() { $0.id < $1.id }
         var fullScanHistoryList: [FullScanHistoryEntry] = []
-        for (scanHistoryEntry, productData) in zip(sortedScanHistoryList, sortedProductDataList) {
-            fullScanHistoryList.append(FullScanHistoryEntry(
-                id: scanHistoryEntry.id,
-                name: productData.name,
-                description: productData.description,
-                image: productData.image,
-                average_grade: productData.average_grade,
-                timestamp: scanHistoryEntry.timestamp))
+        
+        var scan_idx = 0
+        var prod_idx = 0
+        for _ in 0..<min(sortedScanHistoryList.count, sortedProductDataList.count) {
+            
+            var scanHistoryEntry = sortedScanHistoryList[scan_idx]
+            var productData = sortedProductDataList[prod_idx]
+            
+            while scan_idx < sortedScanHistoryList.count-1 && scanHistoryEntry.id < productData.id {
+                scan_idx += 1
+                scanHistoryEntry = sortedScanHistoryList[scan_idx]
+            }
+            while prod_idx < sortedProductDataList.count-1 && productData.id < scanHistoryEntry.id {
+                prod_idx += 1
+                productData = sortedProductDataList[prod_idx]
+            }
+            
+            if scanHistoryEntry.id == productData.id {
+                fullScanHistoryList.append(FullScanHistoryEntry(
+                    id: scanHistoryEntry.id,
+                    name: productData.name,
+                    description: productData.description,
+                    image: productData.image,
+                    average_grade: productData.average_grade,
+                    timestamp: scanHistoryEntry.timestamp
+                ))
+            }
+            scan_idx += 1
+            prod_idx += 1
+            
+            if scan_idx >= sortedScanHistoryList.count || prod_idx >= sortedProductDataList.count {
+                break
+            }
         }
             
         return fullScanHistoryList.sorted() { $0.timestamp > $1.timestamp }
     }
+    
+// BEFORE UNIT TESTS:
+    
+//    public func mergeIntoFullScanHistoryList(scanHistoryList: [ScanHistoryEntry], productDataList: [ProductData]) -> [FullScanHistoryEntry] {
+//        let sortedScanHistoryList = scanHistoryList.sorted() { $0.id < $1.id }
+//        let sortedProductDataList = productDataList.sorted() { $0.id < $1.id }
+//        var fullScanHistoryList: [FullScanHistoryEntry] = []
+//        for (scanHistoryEntry, productData) in zip(sortedScanHistoryList, sortedProductDataList) {
+//            fullScanHistoryList.append(FullScanHistoryEntry(
+//                id: scanHistoryEntry.id,
+//                name: productData.name,
+//                description: productData.description,
+//                image: productData.image,
+//                average_grade: productData.average_grade,
+//                timestamp: scanHistoryEntry.timestamp))
+//        }
+//            
+//        return fullScanHistoryList.sorted() { $0.timestamp > $1.timestamp }
+//    }
     
 }
