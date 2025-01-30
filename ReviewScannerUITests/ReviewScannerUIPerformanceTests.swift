@@ -42,7 +42,6 @@ final class ReviewScannerUIPerformanceTests: XCTestCase {
         let start = Date()
         
         loginButton.tap()
-        print("siemka")
         
         let logoutButton = app.buttons["arrow.left.circle"]
         XCTAssertTrue(logoutButton.waitForExistence(timeout: 5))
