@@ -26,42 +26,6 @@ final class ReviewScannerUITests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
     
-    // helper function used at the start of every test that requires login
-    func login(email: String, password: String) throws {
-        let loginScreenButton = app.buttons["Log In"]
-        loginScreenButton.tap()
-        
-        let emailTextField = app.textFields["Enter your e-mail address"]
-        emailTextField.tap()
-        emailTextField.typeText(email)
-        
-        let passwordTextField = app.secureTextFields["Enter your password"]
-        passwordTextField.tap()
-        passwordTextField.typeText(password)
-        
-        let loginButton = app.buttons["Login"]
-        loginButton.tap()
-        
-        loginButton.waitForNonExistence(timeout: 1)
-    }
-    
-    // helper function that performs manual scanning of a product with a specified barcode
-    func scanBarcode(barcode: String) throws {
-        if barcode.count != 13 {
-            XCTFail("Barcode \(barcode) doesn't have exactly 13 digits")
-        }
-        
-        let scannerButton = app.buttons["Scan"]
-        scannerButton.tap()
-        
-        let digitTextFields = app.textFields.allElementsBoundByIndex
-        
-        for (digit, digitTextField) in zip(barcode, digitTextFields) {
-            digitTextField.tap()
-            digitTextField.typeText(String(digit))
-        }
-    }
-    
     func testHomeScreenForGuestUsers() throws {
         let demoVideoButton = app.buttons["questionmark.circle"]
         XCTAssertTrue(demoVideoButton.exists)
@@ -83,7 +47,7 @@ final class ReviewScannerUITests: XCTestCase {
     }
     
     func testHomeScreenForLoggedUsers() throws {
-        try login(email: UITestConstants.validLoginEmail, password: UITestConstants.validLoginPassword)
+        try login(app: app, email: UITestConstants.validLoginEmail, password: UITestConstants.validLoginPassword)
         
         let demoVideoButton = app.buttons["questionmark.circle"]
         XCTAssertTrue(demoVideoButton.exists)
@@ -154,14 +118,14 @@ final class ReviewScannerUITests: XCTestCase {
     }
     
     func testSuccessfulLoggingIn() throws {
-        try login(email: UITestConstants.validLoginEmail, password: UITestConstants.validLoginPassword)
+        try login(app: app, email: UITestConstants.validLoginEmail, password: UITestConstants.validLoginPassword)
         
         let loginButton = app.buttons["Login"]
         XCTAssertFalse(loginButton.waitForExistence(timeout: 1))
     }
     
     func testUnsuccessfulLoggingIn() throws {
-        try login(email: UITestConstants.validLoginEmail, password: "wrong password")
+        try login(app: app, email: UITestConstants.validLoginEmail, password: "wrong password")
         
         let loginButton = app.buttons["Login"]
         XCTAssertFalse(loginButton.waitForNonExistence(timeout: 1))
@@ -171,7 +135,7 @@ final class ReviewScannerUITests: XCTestCase {
     }
     
     func testLogout() throws {
-        try login(email: UITestConstants.validLoginEmail, password: UITestConstants.validLoginPassword)
+        try login(app: app, email: UITestConstants.validLoginEmail, password: UITestConstants.validLoginPassword)
         
         let logoutButton = app.buttons["arrow.left.circle"]
         logoutButton.tap()
@@ -184,7 +148,7 @@ final class ReviewScannerUITests: XCTestCase {
     }
     
     func testBarcodeScannerManualTypingWithValidBarcode() throws {
-        try scanBarcode(barcode: UITestConstants.validBarcode)
+        try scanBarcode(app: app, barcode: UITestConstants.validBarcode)
         
         // check for a star icon which means that navigation to product view was successful
         let starIcon = app.images["star"]
@@ -192,14 +156,14 @@ final class ReviewScannerUITests: XCTestCase {
     }
     
     func testBarcodeScannerManualTypingWithInvalidBarcode() throws {
-        try scanBarcode(barcode: UITestConstants.invalidBarcode)
+        try scanBarcode(app: app, barcode: UITestConstants.invalidBarcode)
         
         let notFoundText = app.staticTexts["This product is currently not in our database."]
         XCTAssert(notFoundText.waitForExistence(timeout: 5))
     }
     
     func testRecentlyScannedProductsAfterScanningProduct() throws {
-        try scanBarcode(barcode: UITestConstants.validBarcode)
+        try scanBarcode(app: app, barcode: UITestConstants.validBarcode)
         
         // check for a star icon which means that navigation to product view was successful
         let starIcon = app.images["star"]
